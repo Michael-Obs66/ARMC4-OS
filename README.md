@@ -11,6 +11,28 @@ A lightweight **microkernel-based operating system** designed for ARM Cortex-M4 
 This project is built from scratch using **C** and **ARM Assembly**, with a focus on **simplicity, modularity, and extensibility** for IoT and embedded systems.
 
 ---
+## 🚀 Why This Microkernel OS?
+
+Unlike existing RTOS solutions, this project aims to combine **lightweight performance** with **modular security**.  
+Here’s how it compares with well-known technologies:
+
+| Feature / OS        | FreeRTOS ⚡ | Zephyr 🌐 | MicrokernelOS 🔒 |
+|---------------------|------------|-----------|------------------|
+| **Kernel Type**     | Monolithic | Hybrid    | Pure Microkernel |
+| **Footprint**       | Ultra-small (<10KB) | Medium–Large (100KB+) | Small–Medium (scalable) |
+| **Task Isolation**  | ❌ Limited | ⚠️ Partial | ✅ Strong (drivers isolated) |
+| **Real-time**       | ✅ Deterministic | ✅ RT-capable | ✅ RT-capable |
+| **Networking**      | ⚠️ Limited (needs extension) | ✅ Built-in (TCP/IP, Bluetooth, etc.) | ⚠️ Custom / extendable |
+| **Security**        | ❌ Minimal | ⚠️ Moderate | ✅ Higher (fault isolation) |
+| **Modularity**      | ❌ Low     | ✅ High    | ✅ High |
+| **Best Use Case**   | Ultra-light IoT | Complex IoT & networking | Mission-critical IoT (secure + efficient) |
+---
+### ✨ Key Advantages of MicrokernelOS
+- 🔒 **Secure by design**: Drivers and services run in isolated spaces.  
+- ⚡ **Lightweight**: Minimal overhead, suitable for ARM Cortex-M4.  
+- 🔧 **Modular**: Easy to extend with new drivers without touching the kernel.  
+- 🛡️ **Reliable**: A faulty driver won’t crash the whole system.  
+- 📡 **IoT-ready**: Designed with mission-critical IoT use cases in mind (e.g., gas monitoring, safety systems).  
 
 ## ✨ Features
 
