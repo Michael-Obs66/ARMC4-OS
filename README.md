@@ -29,30 +29,37 @@ This project is built from scratch using **C** and **ARM Assembly**, with a focu
 
 ```
 μKernelOS/
-├── boot/               # Startup and linker scripts
+├── boot/
 │   ├── startup.s
 │   ├── linker.ld
 │   └── boot.c
-├── kernel/             # Core kernel functionality
+├── kernel/
 │   ├── kernel.c
 │   ├── scheduler.c
 │   ├── task.c
-│   ├── ipc.c
-│   ├── interrupt.c
-│   ├── timer.c
-│   ├── uart.c
-│   ├── mpu.c
-│   └── heap.c
-├── arch/arm/           # Cortex-M4 specific implementations
+│   └── ipc.c
+├── arch/arm/
 │   ├── cortex_m4.c
 │   ├── context_switch.s
-│   └── exception.c
-├── include/            # Header files
+│   └── interrupt.c
+├── mm/
+│   ├── mm.c
+│   ├── heap.c
+│   └── mpu.c
+├── drivers/
+│   ├── uart.c
+│   ├── gpio.c
+│   ├── timer.c
+│   └── oled.c
+├── apps/
+│   ├── blinky.c
+│   ├── shell.c
+│   └── game.c
+├── include/
 │   ├── kernel.h
 │   ├── task.h
-│   ├── drivers.h
-│   └── config.h
-└── makefile.mak        # Build configuration
+│   └── drivers.h
+└── Makefile
 ```
 
 ---
