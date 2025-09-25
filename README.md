@@ -95,7 +95,15 @@ You can test **μKernelOS** on:
   ```bash
   qemu-system-arm -M stm32-p103 -kernel kernel.elf -serial stdio
   ```
-
+- **Emulator** - run with RENODE:
+  ```bash
+  renode
+  mach create
+  machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl
+  sysbus LoadELF @kernel.elf
+  showAnalyzer sysbus.usart2
+  start
+  ```
 ---
 
 ## 📌 Roadmap
