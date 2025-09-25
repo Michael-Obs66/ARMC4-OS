@@ -67,4 +67,7 @@ flash: $(BIN)
 debug:
 	arm-none-eabi-gdb $(ELF)
 
+renode: $(ELF)
+	renode -e "mach create; machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl; sysbus LoadELF @$(ELF); start"
+
 .PHONY: all clean flash debug
