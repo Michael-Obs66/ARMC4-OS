@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include "drivers.h"
+#include "stm32f4xx.h" 
 
 void blinky_task(void *arg) {
     int led_pin = (int)arg;
