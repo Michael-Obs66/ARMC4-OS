@@ -2,7 +2,7 @@
 
 #define SCB_CPACR (*(volatile uint32_t*)0xE000ED88)
 #define SCB_ICSR  (*(volatile uint32_t*)0xE000ED04)
-
+#include "system_stm32f4xx.h"
 #define SCB_ICSR_PENDSVSET_Msk (1 << 28)
 
 void cortex_m4_init(void) {
@@ -24,3 +24,4 @@ void enable_interrupts(void) {
 void disable_interrupts(void) {
     __asm volatile ("cpsid i");
 }
+
