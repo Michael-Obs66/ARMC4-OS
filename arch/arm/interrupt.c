@@ -1,4 +1,4 @@
-#include "interrupt.h"
+#include "../lib/interrupt.h"
 
 static interrupt_handler_t interrupt_handlers[256];
 
@@ -53,3 +53,4 @@ void EXTI0_IRQHandler(void)
         interrupt_handlers[EXTI0_IRQn]();
     }
 }
+
