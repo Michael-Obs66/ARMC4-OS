@@ -1,6 +1,6 @@
-#include "kernel.h"
-#include "task.h"
-#include "drivers.h"
+#include "../lib/kernel.h"
+#include "../lib/task.h"
+#include "../lib/drivers.h"
 #include "../lib/printf.h"
 
 static volatile uint32_t system_ticks = 0;
@@ -64,3 +64,4 @@ void kernel_panic(const char *message)
     printf("KERNEL PANIC: %s\r\n", message);
     while (1);
 }
+
