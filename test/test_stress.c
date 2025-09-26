@@ -1,7 +1,19 @@
+#include <stdint.h>
 #include <stddef.h>
+#include <string.h>
+
 #include "../include/kernel.h"
 #include "../include/task.h"
 #include "../include/printf.h"
+#include "../include/string.h"
+#include "../include/mm.h"
+#include "../include/ipc.h"
+#include "../include/scheduler.h"
+#include "../include/drivers.h"
+#include "../include/uart.h"
+#include "../include/timer.h"
+#include "../include/gpio.h"   // jika GPIO_PORT_A didefinisikan terpisah
+
 
 #define STRESS_TASK_COUNT 10
 #define STRESS_ITERATIONS 100
