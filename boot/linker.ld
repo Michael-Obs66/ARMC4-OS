@@ -47,5 +47,18 @@ SECTIONS
         _bss_end = .;
     } >RAM
 
-    _estack = ORIGIN(RAM) + LENGTH(RAM);
+    .stack (NOLOAD) :
+    {
+        . = ALIGN(8);
+        _estack = .;
+        . = . + 0x2000; /* 8KB stack */
+        _stack_top = .;
+    } >RAM
+
+    /DISCARD/ :
+    {
+        *(.ARM.exidx*)
+        *(.gnu.debuglink)
+        *(.note.gnu.build-id)
+    }
 }
