@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include "task.h"
+#include "scheduler.h"
 #include "../lib/printf.h"
 
 static task_t *current_task = NULL;
@@ -93,3 +94,4 @@ uint32_t scheduler_get_task_count(void)
 {
     return task_count;
 }
+
