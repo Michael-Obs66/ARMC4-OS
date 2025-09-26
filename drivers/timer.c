@@ -1,31 +1,29 @@
-#include <stdint.h>
-#include "system_stm32f4xx.h"
-#define TIMER_BASE 0x40010000
+#include "drivers.h"
 
-typedef struct {
-    volatile uint32_t LOAD;
-    volatile uint32_t VALUE;
-    volatile uint32_t CTRL;
-    volatile uint32_t INTCLR;
-    volatile uint32_t RIS;
-    volatile uint32_t MIS;
-} timer_t;
+#define TIM1_BASE 0x40012C00
+#define TIM1_CR1  (*((volatile uint32_t *)(TIM1_BASE + 0x00)))
+#define TIM1_PSC  (*((volatile uint32_t *)(TIM1_BASE + 0x28)))
+#define TIM1_ARR  (*((volatile uint32_t *)(TIM1_BASE + 0x2C)))
+#define TIM1_DIER (*((volatile uint32_t *)(TIM1_BASE + 0x0C)))
+#define TIM1_SR   (*((volatile uint32_t *)(TIM1_BASE + 0x10)))
 
-#define TIMER ((timer_t*)TIMER_BASE)
-
-void timer_init(uint32_t interval_ms) {
-    TIMER->LOAD = (SystemCoreClock / 1000) * interval_ms;
-    TIMER->CTRL = (1 << 0) | // Enable timer
-                  (1 << 1) | // Periodic mode
-                  (1 << 2);  // 32-bit mode
-}
-
-void timer_delay_ms(uint32_t ms) {
-    TIMER->LOAD = (SystemCoreClock / 1000) * ms;
-    TIMER->VALUE = TIMER->LOAD;
-    TIMER->CTRL |= (1 << 0);
+void timer_init(void)
+{
+    // Configure TIM1 for 1ms ticks
+    TIM1_PSC = 7200 - 1; // 72MHz / 7200 = 10kHz
+    TIM1_ARR = 10 - 1;   // 10kHz / 10 = 1kHz (1ms)
     
-    while (!(TIMER->RIS & 1));
-    TIMER->INTCLR = 1;
+    TIM1_DIER = 1; // Enable update interrupt
+    TIM1_CR1 = 1;  // Enable timer
 }
 
+void timer_delay_ms(uint32_t ms)
+{
+    // Simple busy wait delay
+    for (volatile uint32_t i = 0; i < ms * 1000; i++);
+}
+
+uint32_t timer_get_ticks(void)
+{
+    return kernel_get_ticks();
+}
