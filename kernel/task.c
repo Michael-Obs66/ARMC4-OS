@@ -1,6 +1,6 @@
-#include "task.h"
-#include "kernel.h"
-#include "../mm/mm.h"
+#include "../lib/task.h"
+#include "../lib/kernel.h"
+#include "../lib/mm.h"
 #include "../lib/string.h"
 #include "../lib/printf.h"
 
@@ -113,3 +113,4 @@ task_t *task_get_by_pid(uint32_t pid)
     }
     return NULL;
 }
+
