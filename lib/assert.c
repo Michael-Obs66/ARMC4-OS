@@ -1,5 +1,5 @@
-#include "../lib/assert.h"
-#include "../lib/printf.h"
+#include "../include/assert.h"
+#include "../include/printf.h"
 
 void assert_failed(const char *file, int line, const char *expr)
 {
