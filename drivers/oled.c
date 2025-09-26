@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
-
+#include "system_stm32f4xx.h"
 // OLED SSD1306 definitions
 #define OLED_ADDRESS 0x3C
 #define OLED_WIDTH 128
