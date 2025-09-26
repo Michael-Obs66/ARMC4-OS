@@ -1,8 +1,19 @@
+#include <stdint.h>
 #include <stddef.h>
+#include <string.h>
+
 #include "../include/kernel.h"
 #include "../include/task.h"
 #include "../include/printf.h"
 #include "../include/string.h"
+#include "../include/mm.h"
+#include "../include/ipc.h"
+#include "../include/scheduler.h"
+#include "../include/drivers.h"
+#include "../include/uart.h"
+#include "../include/timer.h"
+#include "../include/gpio.h"   // jika GPIO_PORT_A didefinisikan terpisah
+
 
 #define TEST_PASSED 1
 #define TEST_FAILED 0
