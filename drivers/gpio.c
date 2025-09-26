@@ -1,53 +1,57 @@
-#include <stdint.h>
-#include "gpio.h"
+#include "drivers.h"
 
-// Base address GPIO
-#define GPIO_BASE 0x50000000
+#define GPIOA_BASE 0x48000000
+#define GPIOA_MODER (*((volatile uint32_t *)(GPIOA_BASE + 0x00)))
+#define GPIOA_ODR   (*((volatile uint32_t *)(GPIOA_BASE + 0x14)))
 
-typedef struct {
-    volatile uint32_t DATA;
-    volatile uint32_t DIR;
-    volatile uint32_t IS;
-    volatile uint32_t IBE;
-    volatile uint32_t IEV;
-    volatile uint32_t IE;
-    volatile uint32_t RIS;
-    volatile uint32_t MIS;
-    volatile uint32_t ICR;
-    volatile uint32_t AFSEL;
-} gpio_t;
+#define GPIOB_BASE 0x48000400
+#define GPIOB_MODER (*((volatile uint32_t *)(GPIOB_BASE + 0x00)))
+#define GPIOB_ODR   (*((volatile uint32_t *)(GPIOB_BASE + 0x14)))
 
-#define GPIO ((gpio_t*)GPIO_BASE)
-
-void gpio_set_direction(int pin, int output) {
-    if (output) {
-        GPIO->DIR |= (1 << pin);
-    } else {
-        GPIO->DIR &= ~(1 << pin);
-    }
+void gpio_init(void)
+{
+    // Enable GPIO clocks already done in SystemInit
+    
+    // Configure PA5 as output (LED)
+    GPIOA_MODER |= (1 << 10);
 }
 
-void gpio_write(int pin, int value) {
+void gpio_set(uint8_t port, uint8_t pin, uint8_t value)
+{
+    volatile uint32_t *odr;
+    
+    switch (port) {
+        case GPIO_PORT_A:
+            odr = &GPIOA_ODR;
+            break;
+        case GPIO_PORT_B:
+            odr = &GPIOB_ODR;
+            break;
+        default:
+            return;
+    }
+    
     if (value) {
-        GPIO->DATA |= (1 << pin);
+        *odr |= (1 << pin);
     } else {
-        GPIO->DATA &= ~(1 << pin);
+        *odr &= ~(1 << pin);
     }
 }
 
-int gpio_read(int pin) {
-    return (GPIO->DATA >> pin) & 1;
-}
-
-void gpio_toggle_pin(int pin) {
-    if (gpio_read(pin)) {
-        gpio_write(pin, 0);
-    } else {
-        gpio_write(pin, 1);
+uint8_t gpio_get(uint8_t port, uint8_t pin)
+{
+    volatile uint32_t *idr;
+    
+    switch (port) {
+        case GPIO_PORT_A:
+            idr = (volatile uint32_t*)(GPIOA_BASE + 0x10);
+            break;
+        case GPIO_PORT_B:
+            idr = (volatile uint32_t*)(GPIOB_BASE + 0x10);
+            break;
+        default:
+            return 0;
     }
-}
-
-void gpio_init(void) {
-    gpio_set_direction(5, 1); // pin 5 sebagai output (LED)
-    gpio_write(5, 0);         // awal LED mati
+    
+    return (*idr >> pin) & 1;
 }
