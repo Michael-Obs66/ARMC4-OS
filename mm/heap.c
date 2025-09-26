@@ -1,4 +1,4 @@
-#include "../lib/heap.h"
+#include "../include/heap.h"
 
 #define HEAP_BLOCK_SIZE 32
 #define HEAP_BLOCKS (HEAP_SIZE / HEAP_BLOCK_SIZE)
@@ -52,4 +52,5 @@ void heap_free(void *ptr)
         heap_blocks[block_index].used = 0;
     }
 }
+
 
