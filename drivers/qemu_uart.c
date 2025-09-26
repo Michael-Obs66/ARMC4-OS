@@ -1,4 +1,4 @@
-#include "../lib/drivers.h"
+#include "../include/drivers.h"
 
 // UART emulation untuk QEMU
 // QEMU semihosting atau PL011 UART
