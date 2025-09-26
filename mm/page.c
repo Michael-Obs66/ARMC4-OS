@@ -1,4 +1,4 @@
-#include "page.h"
+#include "../lib/page.h"
 
 #define PAGE_SIZE 4096
 #define PAGE_COUNT (HEAP_SIZE / PAGE_SIZE)
