@@ -1,6 +1,6 @@
-#include "ipc.h"
-#include "task.h"
-#include "../mm/mm.h"
+#include "../lib/ipc.h"
+#include "../lib/task.h"
+#include "../lib/mm.h"
 #include "../lib/string.h"
 
 #define MAX_QUEUES 10
@@ -104,3 +104,4 @@ void ipc_semaphore_signal(int sem_id)
 {
     // Simplified implementation
 }
+
