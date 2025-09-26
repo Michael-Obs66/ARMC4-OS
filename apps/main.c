@@ -1,5 +1,5 @@
-#include "../lib/kernel.h"
-#include "../lib/printf.h"
+#include "../include/kernel.h"
+#include "../include/printf.h"
 
 // Test functions
 extern void run_all_tests(void);
