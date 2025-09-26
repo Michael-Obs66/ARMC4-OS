@@ -1,4 +1,4 @@
-#include "mm.h"
+#include "../lib/mm.h"
 #include "../lib/printf.h"
 
 #define HEAP_SIZE (64 * 1024) // 64KB
@@ -38,3 +38,4 @@ uint32_t mm_get_used(void)
 {
     return heap_used;
 }
+
