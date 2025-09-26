@@ -1,4 +1,4 @@
-#include "drivers.h"
+#include "../lib/drivers.h"
 
 #define SPI1_BASE 0x40013000
 #define SPI1_CR1  (*((volatile uint32_t *)(SPI1_BASE + 0x00)))
