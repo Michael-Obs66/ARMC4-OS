@@ -1,5 +1,5 @@
 #include <stdint.h>
-
+#include "system_stm32f4xx.h" 
 #define UART0_BASE 0x4000C000
 
 typedef struct {
@@ -31,3 +31,4 @@ void uart_puts(const char *str) {
         uart_putchar(*str++);
     }
 }
+
