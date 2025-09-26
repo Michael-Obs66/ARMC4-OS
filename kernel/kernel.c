@@ -6,7 +6,7 @@
 #include "../include/uart.h"
 #include "../include/timer.h"
 #include "../include/scheduler.h"
-#include "../include/mm.h
+#include "../include/mm.h"
 
 
 static volatile uint32_t system_ticks = 0;
@@ -70,6 +70,7 @@ void kernel_panic(const char *message)
     printf("KERNEL PANIC: %s\r\n", message);
     while (1);
 }
+
 
 
 
