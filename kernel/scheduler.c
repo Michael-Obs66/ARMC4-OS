@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include "task.h"
+#include "stm32f4xx.h" 
 #include "core_cm4.h"
 
 static uint32_t current_task_index = 0;
@@ -26,4 +27,5 @@ void scheduler(void) {
 void task_yield(void) {
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
+
 
