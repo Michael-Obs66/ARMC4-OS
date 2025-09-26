@@ -34,38 +34,34 @@ Reset_Handler:
     
     ldr r0, =_data_start
     ldr r1, =_data_end
-    ldr r2, =_data_load
-    bl memory_copy
+    ldr r2, =_data_load_start
+    cmp r0, r1
+    beq main_init
     
+copy_data:
+    ldr r3, [r2], #4
+    str r3, [r0], #4
+    cmp r0, r1
+    blt copy_data
+
+main_init:
     ldr r0, =_bss_start
     ldr r1, =_bss_end
     mov r2, #0
-    bl memory_set
+    
+zero_bss:
+    str r2, [r0], #4
+    cmp r0, r1
+    blt zero_bss
     
     bl SystemInit
     bl main
     b .
 
-memory_copy:
-    cmp r0, r1
-    beq copy_done
-copy_loop:
-    ldr r3, [r2], #4
-    str r3, [r0], #4
-    cmp r0, r1
-    blt copy_loop
-copy_done:
-    bx lr
-
-memory_set:
-    cmp r0, r1
-    beq set_done
-set_loop:
-    str r2, [r0], #4
-    cmp r0, r1
-    blt set_loop
-set_done:
-    bx lr
+.thumb_func
+.global Default_Handler
+Default_Handler:
+    b .
 
 .weak NMI_Handler
 .thumb_set NMI_Handler,Default_Handler
@@ -85,6 +81,3 @@ set_done:
 .thumb_set PendSV_Handler,Default_Handler
 .weak SysTick_Handler
 .thumb_set SysTick_Handler,Default_Handler
-
-Default_Handler:
-    b .
