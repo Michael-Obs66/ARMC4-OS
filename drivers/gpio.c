@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 #define GPIO_BASE 0x50000000
-
+#include "system_stm32f4xx.h"
 typedef struct {
     volatile uint32_t DATA;
     volatile uint32_t DIR;
@@ -36,3 +36,4 @@ void gpio_write(int pin, int value) {
 int gpio_read(int pin) {
     return (GPIO->DATA >> pin) & 1;
 }
+
