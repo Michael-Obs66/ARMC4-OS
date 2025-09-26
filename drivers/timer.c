@@ -1,4 +1,4 @@
-#include "drivers.h"
+#include "..lib/drivers.h"
 
 #define TIM1_BASE 0x40012C00
 #define TIM1_CR1  (*((volatile uint32_t *)(TIM1_BASE + 0x00)))
@@ -27,3 +27,4 @@ uint32_t timer_get_ticks(void)
 {
     return kernel_get_ticks();
 }
+
