@@ -1,7 +1,7 @@
-#include "../lib/kernel.h"
-#include "../lib/mm.h"
-#include "../lib/printf.h"
-#include "../lib/string.h"
+#include "../include/kernel.h"
+#include "../include/mm.h"
+#include "../include/printf.h"
+#include "../include/string.h"
 
 #define MEMORY_TEST_SIZE 1024
 
