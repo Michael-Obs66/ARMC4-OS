@@ -1,14 +1,20 @@
 #include "kernel.h"
-#include <string.h> // untuk memcpy stub
 
-// Stub kernel_init
+// Global variables
+task_t task_table[MAX_TASKS];
+task_t *current_task = NULL;
+uint32_t task_count = 0;
+
 void kernel_init(void) {
-    // Kosong, nanti implementasi asli
+    // Init kernel-related peripherals
 }
 
-// Stub create_task
-void create_task(void (*task_func)(void*), const char *name) {
-    (void)task_func;
-    (void)name;
-    // Hanya stub, tidak melakukan apa-apa
+void kernel_start(void) {
+    if (task_count > 0) {
+        current_task = &task_table[0];
+        current_task->state = TASK_RUNNING;
+        scheduler();
+    }
 }
+
+
