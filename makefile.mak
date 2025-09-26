@@ -1,27 +1,34 @@
+# ================================
 # Toolchain
-CC = arm-none-eabi-gcc
-AS = arm-none-eabi-as
-LD = arm-none-eabi-ld
+# ================================
+CC      = arm-none-eabi-gcc
+AS      = arm-none-eabi-as
+LD      = arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
 
-# MCU specific
-CPU = cortex-m4
-FPU = fpv4-sp-d16
-FLOAT-ABI = hard
+# ================================
+# MCU Specific
+# ================================
+CPU        = cortex-m4
+FPU        = fpv4-sp-d16
+FLOAT-ABI  = hard
 
-# Build flags
+# ================================
+# Build Flags
+# ================================
 CFLAGS = -mcpu=$(CPU) -mthumb -mfpu=$(FPU) -mfloat-abi=$(FLOAT-ABI)
 CFLAGS += -O2 -g -Wall -Wextra
-CFLAGS += -Iinclude -ffreestanding -nostdlib
+CFLAGS += -Iinclude -Icmsis_core -ffreestanding -nostdlib
 CFLAGS += -DSystemCoreClock=16000000UL
-CFLAGS += -Icmsis_core
 CFLAGS += -D__FPU_PRESENT=1U
 CFLAGS += -D__NVIC_PRIO_BITS=4U
 
 ASFLAGS = -mcpu=$(CPU) -mthumb
 
-# Source files
+# ================================
+# Source Files
+# ================================
 SRCS = boot/startup.s \
        boot/boot.c \
        kernel/kernel.c \
@@ -42,12 +49,16 @@ SRCS = boot/startup.s \
 OBJS = $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
 
+# ================================
 # Output
+# ================================
 TARGET = ukernelos
-ELF = $(TARGET).elf
-BIN = $(TARGET).bin
+ELF    = $(TARGET).elf
+BIN    = $(TARGET).bin
 
-# Rules
+# ================================
+# Build Rules
+# ================================
 all: $(BIN)
 
 $(ELF): $(OBJS)
@@ -56,12 +67,17 @@ $(ELF): $(OBJS)
 $(BIN): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
+# Compile C files
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Compile Assembly files
 %.o: %.s
 	$(AS) $(ASFLAGS) -c $< -o $@
 
+# ================================
+# Utility Targets
+# ================================
 clean:
 	rm -f $(OBJS) $(ELF) $(BIN)
 
@@ -74,7 +90,4 @@ debug:
 renode: $(ELF)
 	renode -e "mach create; machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl; sysbus LoadELF @$(ELF); start"
 
-.PHONY: all clean flash debug
-
-
-
+.PHONY: all clean flash debug renode
