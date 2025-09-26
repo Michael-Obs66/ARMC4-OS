@@ -4,11 +4,21 @@ AS = arm-none-eabi-as
 LD = arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
+SIZE = arm-none-eabi-size
 
-# Flags
-CFLAGS = -mcpu=cortex-m4 -mthumb -Wall -O2 -nostdlib -ffreestanding
-ASFLAGS = -mcpu=cortex-m4 -mthumb
-LDFLAGS = -T boot/linker.ld -nostdlib
+# Flags untuk Cortex-M4
+CPU = cortex-m4
+CFLAGS = -mcpu=$(CPU) -mthumb -Wall -O2 -nostdlib -ffreestanding \
+         -fno-common -ffunction-sections -fdata-sections
+ASFLAGS = -mcpu=$(CPU) -mthumb
+LDFLAGS = -T boot/linker.ld -nostdlib -nostartfiles \
+          --specs=nosys.specs -Wl,--gc-sections
+
+# QEMU configuration
+QEMU = qemu-system-arm
+QEMU_MACHINE = netduinoplus2
+QEMU_CPU = cortex-m4
+QEMU_MEM = 128M
 
 # Sources
 SRCS = \
@@ -36,40 +46,51 @@ SRCS = \
     tests/test_stress.c \
     apps/main.c
 
-# Objects
 OBJS = $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
 
-# Target
+# Targets
 TARGET = ukernelos
-test: $(TARGET).bin
-    echo "Flashing and testing μKernelOS..."
-    make flash
-    # Tambahkan script testing hardware di sini
 
-test-sim: $(TARGET).elf
-    echo "Running tests in simulator..."
-    arm-none-eabi-gdb -x test_commands.gdb $(TARGET).elf
-all: $(TARGET).bin
+all: $(TARGET).bin $(TARGET).elf
+	$(SIZE) $(TARGET).elf
 
 $(TARGET).elf: $(OBJS)
-    $(LD) $(LDFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	$(OBJDUMP) -S $@ > $@.disasm
 
 $(TARGET).bin: $(TARGET).elf
-    $(OBJCOPY) -O binary $< $@
+	$(OBJCOPY) -O binary $< $@
 
 %.o: %.c
-    $(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 %.o: %.s
-    $(AS) $(ASFLAGS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
+
+# QEMU Targets
+qemu: $(TARGET).elf
+	$(QEMU) -machine $(QEMU_MACHINE) -cpu $(QEMU_CPU) \
+	        -kernel $(TARGET).elf -nographic -serial mon:stdio \
+	        -m $(QEMU_MEM)
+
+qemu-debug: $(TARGET).elf
+	$(QEMU) -machine $(QEMU_MACHINE) -cpu $(QEMU_CPU) \
+	        -kernel $(TARGET).elf -nographic -serial mon:stdio \
+	        -m $(QEMU_MEM) -s -S
+
+qemu-gdb: $(TARGET).elf
+	$(QEMU) -machine $(QEMU_MACHINE) -cpu $(QEMU_CPU) \
+	        -kernel $(TARGET).elf -nographic -serial mon:stdio \
+	        -m $(QEMU_MEM) -s -S &
+
+qemu-test: $(TARGET).elf
+	echo "Starting automated tests in QEMU..."
+	$(QEMU) -machine $(QEMU_MACHINE) -cpu $(QEMU_CPU) \
+	        -kernel $(TARGET).elf -nographic -serial stdio \
+	        -m $(QEMU_MEM) | tee test_output.log
 
 clean:
-    rm -f $(OBJS) $(TARGET).elf $(TARGET).bin
+	rm -f $(OBJS) $(TARGET).elf $(TARGET).bin $(TARGET).elf.disasm
 
-flash: $(TARGET).bin
-    openocd -f interface/stlink-v2.cfg -f target/stm32f4x.cfg -c "program $(TARGET).bin verify reset exit 0x08000000"
-
-.PHONY: all clean flash
-
-
+.PHONY: all clean qemu qemu-debug qemu-gdb qemu-test
