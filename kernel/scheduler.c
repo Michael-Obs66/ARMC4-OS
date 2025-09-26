@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "../include/kernel.h"
 #include "../include/task.h"
 #include "../include/scheduler.h"
@@ -94,6 +95,7 @@ uint32_t scheduler_get_task_count(void)
 {
     return task_count;
 }
+
 
 
 
