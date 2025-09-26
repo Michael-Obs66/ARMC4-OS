@@ -25,6 +25,7 @@ typedef struct {
     uint32_t task_id;
 } task_t;
 
+// Kernel functions
 void kernel_init(void);
 void kernel_start(void);
 void create_task(void (*task)(void*), void *arg, uint32_t priority);
@@ -32,6 +33,7 @@ void scheduler(void);
 void context_switch(void);
 void systick_handler(void);
 
+// Global variables
 extern task_t *current_task;
 extern task_t task_table[MAX_TASKS];
 extern uint32_t task_count;
