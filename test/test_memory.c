@@ -1,5 +1,5 @@
-#include "../kernel/kernel.h"
-#include "../mm/mm.h"
+#include "../lib/kernel.h"
+#include "../lib/mm.h"
 #include "../lib/printf.h"
 #include "../lib/string.h"
 
