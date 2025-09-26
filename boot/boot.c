@@ -11,7 +11,7 @@ void SystemInit(void) {
 
 void systick_delay_ms(uint32_t delay) {
     uint32_t *STK_LOAD = (uint32_t*)0xE000E014;
-    uint32_t *STK_VAL = (uint32_t*)0xE000E018;
+    uint32_t *STK_VAL  = (uint32_t*)0xE000E018;
     uint32_t *STK_CTRL = (uint32_t*)0xE000E010;
     
     *STK_LOAD = SYSTICK_LOAD_VAL - 1;
