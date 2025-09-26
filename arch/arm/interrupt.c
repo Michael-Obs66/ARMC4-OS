@@ -1,23 +1,55 @@
-#include <stdint.h>
-#include "stm32f4xx.h"
-#include "core_cm4.h"
-#define NVIC_ISER0 (*(volatile uint32_t*)0xE000E100)
-#define NVIC_IPR0  (*(volatile uint32_t*)0xE000E400)
+#include "interrupt.h"
 
-void nvic_enable_irq(int irq_number) {
-    NVIC_ISER0 |= (1 << irq_number);
+static interrupt_handler_t interrupt_handlers[256];
+
+void interrupt_init(void)
+{
+    for (int i = 0; i < 256; i++) {
+        interrupt_handlers[i] = NULL;
+    }
 }
 
-void nvic_set_priority(int irq_number, uint8_t priority) {
-    volatile uint8_t *pri_reg = (volatile uint8_t*)(NVIC_IPR0 + irq_number);
-    *pri_reg = priority;
+void interrupt_register(int irq, interrupt_handler_t handler)
+{
+    if (irq >= 0 && irq < 256) {
+        interrupt_handlers[irq] = handler;
+    }
 }
 
-void systick_init(uint32_t reload_value) {
-    SysTick->LOAD = reload_value;
-    SysTick->VAL = 0;
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
-                   SysTick_CTRL_TICKINT_Msk |
-                   SysTick_CTRL_ENABLE_Msk;
+void interrupt_enable(int irq)
+{
+    cortex_m4_enable_irq(irq);
 }
 
+void interrupt_disable(int irq)
+{
+    cortex_m4_disable_irq(irq);
+}
+
+// Default interrupt handler
+void Default_Handler(void)
+{
+    while (1);
+}
+
+// IRQ Handlers
+void USART1_IRQHandler(void) 
+{
+    if (interrupt_handlers[USART1_IRQn]) {
+        interrupt_handlers[USART1_IRQn]();
+    }
+}
+
+void TIM1_IRQHandler(void)
+{
+    if (interrupt_handlers[TIM1_IRQn]) {
+        interrupt_handlers[TIM1_IRQn]();
+    }
+}
+
+void EXTI0_IRQHandler(void)
+{
+    if (interrupt_handlers[EXTI0_IRQn]) {
+        interrupt_handlers[EXTI0_IRQn]();
+    }
+}
