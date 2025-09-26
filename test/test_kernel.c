@@ -1,7 +1,7 @@
-#include "../lib/kernel.h"
-#include "../lib/task.h"
-#include "../lib/printf.h"
-#include "../lib/string.h"
+#include "../include/kernel.h"
+#include "../include/task.h"
+#include "../include/printf.h"
+#include "../include/string.h"
 
 #define TEST_PASSED 1
 #define TEST_FAILED 0
