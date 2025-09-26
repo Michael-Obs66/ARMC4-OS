@@ -1,4 +1,4 @@
-#include "../lib/drivers.h"
+#include "../include/drivers.h"
 
 #define USART1_BASE 0x40013800
 #define USART1_SR   (*((volatile uint32_t *)(USART1_BASE + 0x00)))
@@ -38,4 +38,5 @@ void uart_puts(const char *str)
         uart_putc(*str++);
     }
 }
+
 
