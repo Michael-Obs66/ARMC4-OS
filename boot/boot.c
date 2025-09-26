@@ -7,15 +7,28 @@ void SystemInit(void) {
 
 // Fungsi main μKernelOS
 int main(void) {
-    SystemInit();
+    SystemI#include "kernel.h"
+#include "task.h"
+
+// Contoh task sederhana
+void example_task(void *arg) {
+    while(1) {
+        // Bisa ditambahkan aksi LED blink atau delay
+        task_yield();  // beri kesempatan scheduler menjalankan task lain
+    }
+}
+
+int main(void) {
+    // Inisialisasi kernel
     kernel_init();
 
-    // Buat contoh task
-    create_task(NULL, "example_task");
+    // Buat task dengan prioritas 1
+    task_create(example_task, NULL, 1);
 
-    while(1) {
-        // Loop utama kernel, bisa ditambahkan scheduler di sini nanti
-    }
+    // Mulai scheduler
+    kernel_start();
 
-    return 0;
+    // Main loop kernel (tidak akan kembali)
+    while(1);
 }
+
