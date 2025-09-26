@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "../include/cortex_m4.h"
 
 #define NVIC_BASE 0xE000E100
@@ -53,5 +54,6 @@ void cortex_m4_sev(void)
 {
     __asm volatile ("sev");
 }
+
 
 
