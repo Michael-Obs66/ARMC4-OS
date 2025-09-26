@@ -1,7 +1,9 @@
 #include <stdint.h>
+#include "gpio.h"
 
+// Base address GPIO
 #define GPIO_BASE 0x50000000
-#include "system_stm32f4xx.h"
+
 typedef struct {
     volatile uint32_t DATA;
     volatile uint32_t DIR;
@@ -37,3 +39,15 @@ int gpio_read(int pin) {
     return (GPIO->DATA >> pin) & 1;
 }
 
+void gpio_toggle_pin(int pin) {
+    if (gpio_read(pin)) {
+        gpio_write(pin, 0);
+    } else {
+        gpio_write(pin, 1);
+    }
+}
+
+void gpio_init(void) {
+    gpio_set_direction(5, 1); // pin 5 sebagai output (LED)
+    gpio_write(5, 0);         // awal LED mati
+}
