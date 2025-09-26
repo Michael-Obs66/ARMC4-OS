@@ -1,4 +1,4 @@
-
+#include <stddef.h>
 #include "../include/page.h"
 #include "../include/heap.h"   // Untuk HEAP_SIZE, karena PAGE_COUNT tergantung HEAP_SIZE
 
