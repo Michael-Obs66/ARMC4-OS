@@ -1,4 +1,4 @@
-#include "../kernel/kernel.h"
+#include "../lib/kernel.h"
 #include "../lib/printf.h"
 
 // Test functions
