@@ -12,7 +12,7 @@
 #include "../include/drivers.h"
 #include "../include/uart.h"
 #include "../include/timer.h"
-#include "../include/gpio.h"   // jika GPIO_PORT_A didefinisikan terpisah
+
 
 
 #define TEST_PASSED 1
