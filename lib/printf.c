@@ -1,4 +1,4 @@
-#include "printf.h"
+#include "../lib/printf.h"
 
 static void print_char(char c)
 {
