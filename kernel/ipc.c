@@ -1,53 +1,106 @@
-#include "kernel.h"
-#include <stdbool.h>
-#include "stm32f4xx.h" 
-#define MAX_QUEUES 4
-#define QUEUE_SIZE 16
+#include "ipc.h"
+#include "task.h"
+#include "../mm/mm.h"
+#include "../lib/string.h"
+
+#define MAX_QUEUES 10
+#define MAX_MESSAGES 32
 
 typedef struct {
-    uint32_t data[QUEUE_SIZE];
-    uint32_t head, tail, count;
-    bool full;
+    uint32_t head;
+    uint32_t tail;
+    uint32_t count;
+    uint32_t size;
+    void *buffer;
+    task_t *waiting_tasks;
 } message_queue_t;
 
 static message_queue_t queues[MAX_QUEUES];
+static uint32_t queue_count = 0;
 
-void ipc_init(void) {
-    for (int i = 0; i < MAX_QUEUES; i++) {
-        queues[i].head = 0;
-        queues[i].tail = 0;
-        queues[i].count = 0;
-        queues[i].full = false;
+int ipc_queue_create(uint32_t size)
+{
+    if (queue_count >= MAX_QUEUES) {
+        return -1;
     }
+    
+    message_queue_t *queue = &queues[queue_count];
+    queue->buffer = kmalloc(size);
+    
+    if (queue->buffer == NULL) {
+        return -1;
+    }
+    
+    queue->head = 0;
+    queue->tail = 0;
+    queue->count = 0;
+    queue->size = size;
+    queue->waiting_tasks = NULL;
+    
+    return queue_count++;
 }
 
-bool message_send(uint32_t queue_id, uint32_t message) {
-    if (queue_id >= MAX_QUEUES) return false;
+int ipc_send(int queue_id, void *message, uint32_t size)
+{
+    if (queue_id < 0 || queue_id >= queue_count) {
+        return -1;
+    }
     
     message_queue_t *queue = &queues[queue_id];
     
-    if (queue->full) return false;
+    if (queue->count >= queue->size) {
+        // Queue full, block task
+        task_t *current = scheduler_get_current_task();
+        current->state = TASK_BLOCKED;
+        // Add to waiting list (simplified)
+        schedule();
+    }
     
-    queue->data[queue->tail] = message;
-    queue->tail = (queue->tail + 1) % QUEUE_SIZE;
-    queue->count++;
-    queue->full = (queue->tail == queue->head);
+    // Copy message to queue
+    memcpy((uint8_t*)queue->buffer + queue->tail, message, size);
+    queue->tail = (queue->tail + size) % queue->size;
+    queue->count += size;
     
-    return true;
+    // Wake up waiting tasks (simplified)
+    
+    return 0;
 }
 
-bool message_receive(uint32_t queue_id, uint32_t *message) {
-    if (queue_id >= MAX_QUEUES) return false;
+int ipc_receive(int queue_id, void *buffer, uint32_t size)
+{
+    if (queue_id < 0 || queue_id >= queue_count) {
+        return -1;
+    }
     
     message_queue_t *queue = &queues[queue_id];
     
-    if (queue->count == 0) return false;
+    if (queue->count == 0) {
+        // Queue empty, block task
+        task_t *current = scheduler_get_current_task();
+        current->state = TASK_BLOCKED;
+        schedule();
+    }
     
-    *message = queue->data[queue->head];
-    queue->head = (queue->head + 1) % QUEUE_SIZE;
-    queue->count--;
-    queue->full = false;
+    // Copy message from queue
+    memcpy(buffer, (uint8_t*)queue->buffer + queue->head, size);
+    queue->head = (queue->head + size) % queue->size;
+    queue->count -= size;
     
-    return true;
+    return 0;
 }
 
+int ipc_semaphore_create(uint32_t initial_value)
+{
+    // Simplified semaphore implementation
+    return 0;
+}
+
+void ipc_semaphore_wait(int sem_id)
+{
+    // Simplified implementation
+}
+
+void ipc_semaphore_signal(int sem_id)
+{
+    // Simplified implementation
+}
