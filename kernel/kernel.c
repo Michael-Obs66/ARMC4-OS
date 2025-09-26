@@ -2,6 +2,11 @@
 #include "../include/task.h"
 #include "../include/drivers.h"
 #include "../include/printf.h"
+#include "../include/system.h"
+#include "../include/uart.h"
+#include "../include/timer.h"
+#include "../include/schedule.h"
+
 
 static volatile uint32_t system_ticks = 0;
 static uint8_t kernel_initialized = 0;
@@ -64,5 +69,6 @@ void kernel_panic(const char *message)
     printf("KERNEL PANIC: %s\r\n", message);
     while (1);
 }
+
 
 
