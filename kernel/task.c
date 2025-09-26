@@ -4,6 +4,7 @@
 #include "../include/mm.h"
 #include "../include/string.h"
 #include "../include/printf.h"
+#include "../include/scheduler.h"
 
 static uint32_t next_pid = 1;
 static task_t task_table[MAX_TASKS];
@@ -114,6 +115,7 @@ task_t *task_get_by_pid(uint32_t pid)
     }
     return NULL;
 }
+
 
 
 
