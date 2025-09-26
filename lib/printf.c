@@ -1,5 +1,7 @@
-#include <stddef.h>
+#include <stdint.h>
+#include <stdarg.h>
 #include "../include/printf.h"
+#include "../include/uart.h"
 
 static void print_char(char c)
 {
