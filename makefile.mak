@@ -1,89 +1,63 @@
-# ================================
 # Toolchain
-# ================================
-CC      = arm-none-eabi-gcc
-AS      = arm-none-eabi-as
+CC = arm-none-eabi-gcc
+AS = arm-none-eabi-as
+LD = arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
-LD      = arm-none-eabi-ld
+OBJDUMP = arm-none-eabi-objdump
 
-# ================================
-# MCU Specific
-# ================================
-CPU        = cortex-m4
-FPU        = fpv4-sp-d16
-FLOAT-ABI  = hard
+# Flags
+CFLAGS = -mcpu=cortex-m4 -mthumb -Wall -O2 -nostdlib -ffreestanding
+ASFLAGS = -mcpu=cortex-m4 -mthumb
+LDFLAGS = -T boot/linker.ld -nostdlib
 
-# ================================
-# Build Flags
-# ================================
-CFLAGS = -mcpu=$(CPU) -mthumb -mfpu=$(FPU) -mfloat-abi=$(FLOAT-ABI)
-CFLAGS += -O2 -g -Wall -Wextra
-CFLAGS += -Iinclude -Icmsis_core -ffreestanding -nostdlib
-CFLAGS += -D__FPU_PRESENT=1U
-CFLAGS += -D__NVIC_PRIO_BITS=4U
+# Sources
+SRCS = \
+    boot/startup.s \
+    boot/boot.c \
+    kernel/kernel.c \
+    kernel/scheduler.c \
+    kernel/task.c \
+    kernel/ipc.c \
+    arch/arm/cortex_m4.c \
+    arch/arm/context_switch.s \
+    arch/arm/interrupt.c \
+    mm/mm.c \
+    mm/heap.c \
+    mm/page.c \
+    drivers/uart.c \
+    drivers/gpio.c \
+    drivers/timer.c \
+    drivers/spi.c \
+    lib/string.c \
+    lib/printf.c \
+    lib/assert.c \
+    apps/main.c
 
-ASFLAGS = -mcpu=$(CPU) -mthumb
-
-# ================================
-# Source Files
-# ================================
-SRCS = boot/startup.s \
-       boot/boot.c \
-       kernel/kernel.c \
-       kernel/scheduler.c \
-       kernel/task.c \
-       kernel/ipc.c \
-       arch/arm/cortex_m4.c \
-       arch/arm/interrupt.c \
-       mm/mm.c \
-       mm/heap.c \
-       mm/mpu.c \
-       drivers/uart.c \
-       drivers/gpio.c \
-       drivers/timer.c \
-       apps/blinky.c \
-       apps/shell.c
-
-# Object files
+# Objects
 OBJS = $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
 
-# ================================
-# Output
-# ================================
+# Target
 TARGET = ukernelos
-ELF    = $(TARGET).elf
-BIN    = $(TARGET).bin
 
-# ================================
-# Build Rules
-# ================================
-all: $(BIN)
+all: $(TARGET).bin
 
-$(ELF): $(OBJS)
-	$(CC) $(CFLAGS) -T boot/linker.ld -o $@ $^ -lgcc
+$(TARGET).elf: $(OBJS)
+    $(LD) $(LDFLAGS) -o $@ $^
 
-$(BIN): $(ELF)
-	$(OBJCOPY) -O binary $< $@
+$(TARGET).bin: $(TARGET).elf
+    $(OBJCOPY) -O binary $< $@
 
-# Compile C files
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+    $(CC) $(CFLAGS) -c -o $@ $<
 
-# Compile Assembly files
 %.o: %.s
-	$(AS) $(ASFLAGS) -c $< -o $@
+    $(AS) $(ASFLAGS) -o $@ $<
 
-# ================================
-# Utility Targets
-# ================================
 clean:
-	rm -f $(OBJS) $(ELF) $(BIN)
+    rm -f $(OBJS) $(TARGET).elf $(TARGET).bin
 
-flash: $(BIN)
-	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program $(BIN) verify reset exit"
+flash: $(TARGET).bin
+    openocd -f interface/stlink-v2.cfg -f target/stm32f4x.cfg -c "program $(TARGET).bin verify reset exit 0x08000000"
 
-debug:
-	arm-none-eabi-gdb $(ELF)
-
-.PHONY: all clean flash debug
+.PHONY: all clean flash
