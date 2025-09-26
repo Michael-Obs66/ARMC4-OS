@@ -1,3 +1,4 @@
+#include <stddef.h>   
 #include "../include/kernel.h"
 #include "../include/task.h"
 #include "../include/drivers.h"
@@ -8,6 +9,9 @@
 #include "../include/scheduler.h"
 #include "../include/mm.h"
 
+static volatile uint32_t system_ticks = 0;
+static uint8_t kernel_initialized = 0;
+void idle_task(void *arg);
 
 static volatile uint32_t system_ticks = 0;
 static uint8_t kernel_initialized = 0;
@@ -70,6 +74,7 @@ void kernel_panic(const char *message)
     printf("KERNEL PANIC: %s\r\n", message);
     while (1);
 }
+
 
 
 
