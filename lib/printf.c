@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "../include/printf.h"
 
 static void print_char(char c)
