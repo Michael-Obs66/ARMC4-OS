@@ -20,7 +20,6 @@ FLOAT-ABI  = hard
 CFLAGS = -mcpu=$(CPU) -mthumb -mfpu=$(FPU) -mfloat-abi=$(FLOAT-ABI)
 CFLAGS += -O2 -g -Wall -Wextra
 CFLAGS += -Iinclude -Icmsis_core -ffreestanding -nostdlib
-CFLAGS += -DSystemCoreClock=16000000UL
 CFLAGS += -D__FPU_PRESENT=1U
 CFLAGS += -D__NVIC_PRIO_BITS=4U
 
@@ -91,3 +90,4 @@ renode: $(ELF)
 	renode -e "mach create; machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl; sysbus LoadELF @$(ELF); start"
 
 .PHONY: all clean flash debug renode
+
