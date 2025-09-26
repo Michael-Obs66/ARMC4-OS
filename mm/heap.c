@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include "../include/heap.h"
+#include "../include/page.h"
 
 #define HEAP_SIZE       (1024 * 10) // 10 KB heap
 #define HEAP_BLOCK_SIZE 32           // ukuran tiap block
@@ -48,4 +49,5 @@ uint32_t heap_get_free_size(void) {
 uint32_t heap_get_used_size(void) {
     return HEAP_SIZE - heap_get_free_size();
 }
+
 
