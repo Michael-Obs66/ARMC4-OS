@@ -1,6 +1,6 @@
-#include "../lib/kernel.h"
-#include "../lib/task.h"
-#include "../lib/printf.h"
+#include "../include/kernel.h"
+#include "../include/task.h"
+#include "../include/printf.h"
 
 #define STRESS_TASK_COUNT 10
 #define STRESS_ITERATIONS 100
