@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include "task.h"
+#include "stm32f4xx.h" 
 
 task_t *current_task = NULL;
 task_t task_table[MAX_TASKS];
@@ -50,3 +51,4 @@ void SysTick_Handler(void) {
     systick_count++;
     scheduler();
 }
+
