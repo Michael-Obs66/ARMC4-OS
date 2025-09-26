@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include "drivers.h"
+#include "stm32f4xx.h" 
 
 #define MAX_CMD_LEN 64
 
@@ -43,3 +44,4 @@ void shell_task(void *arg) {
 void shell_init(void) {
     create_task(shell_task, NULL, 2);
 }
+
