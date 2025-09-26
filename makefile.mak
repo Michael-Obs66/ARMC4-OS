@@ -42,7 +42,14 @@ OBJS := $(OBJS:.s=.o)
 
 # Target
 TARGET = ukernelos
+test: $(TARGET).bin
+    echo "Flashing and testing μKernelOS..."
+    make flash
+    # Tambahkan script testing hardware di sini
 
+test-sim: $(TARGET).elf
+    echo "Running tests in simulator..."
+    arm-none-eabi-gdb -x test_commands.gdb $(TARGET).elf
 all: $(TARGET).bin
 
 $(TARGET).elf: $(OBJS)
@@ -64,4 +71,5 @@ flash: $(TARGET).bin
     openocd -f interface/stlink-v2.cfg -f target/stm32f4x.cfg -c "program $(TARGET).bin verify reset exit 0x08000000"
 
 .PHONY: all clean flash
+
 
