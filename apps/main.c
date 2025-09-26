@@ -1,5 +1,8 @@
-#include "../include/kernel.h"
+#include <stddef.h>           // untuk NULL
 #include "../include/printf.h"
+#include "../include/task.h"
+#include "../include/mm.h"
+#include "../include/scheduler.h"
 
 // Test functions
 extern void run_all_tests(void);
