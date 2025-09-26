@@ -1,4 +1,4 @@
-#include "kernel/kernel.h"
+#include "kernel.h"
 
 // System stub, seperti yang kita bahas
 void SystemInit(void) {
