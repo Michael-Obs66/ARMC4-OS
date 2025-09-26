@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "../include/ipc.h"
 #include "../include/task.h"
 #include "../include/mm.h"
@@ -104,5 +105,6 @@ void ipc_semaphore_signal(int sem_id)
 {
     // Simplified implementation
 }
+
 
 
