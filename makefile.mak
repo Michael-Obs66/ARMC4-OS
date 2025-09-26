@@ -4,21 +4,15 @@ AS = arm-none-eabi-as
 LD = arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
-SIZE = arm-none-eabi-size
 
 # Flags untuk Cortex-M4
 CPU = cortex-m4
 CFLAGS = -mcpu=$(CPU) -mthumb -Wall -O2 -nostdlib -ffreestanding \
-         -fno-common -ffunction-sections -fdata-sections
+         -fno-common -ffunction-sections -fdata-sections \
+         -Iinclude -I. -Ikernel -Iarch/arm -Imm -Idrivers -Ilib
 ASFLAGS = -mcpu=$(CPU) -mthumb
 LDFLAGS = -T boot/linker.ld -nostdlib -nostartfiles \
           --specs=nosys.specs -Wl,--gc-sections
-
-# QEMU configuration
-QEMU = qemu-system-arm
-QEMU_MACHINE = netduinoplus2
-QEMU_CPU = cortex-m4
-QEMU_MEM = 128M
 
 # Sources
 SRCS = \
@@ -49,11 +43,9 @@ SRCS = \
 OBJS = $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
 
-# Targets
 TARGET = ukernelos
 
 all: $(TARGET).bin $(TARGET).elf
-	$(SIZE) $(TARGET).elf
 
 $(TARGET).elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
@@ -68,29 +60,7 @@ $(TARGET).bin: $(TARGET).elf
 %.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
-# QEMU Targets
-qemu: $(TARGET).elf
-	$(QEMU) -machine $(QEMU_MACHINE) -cpu $(QEMU_CPU) \
-	        -kernel $(TARGET).elf -nographic -serial mon:stdio \
-	        -m $(QEMU_MEM)
-
-qemu-debug: $(TARGET).elf
-	$(QEMU) -machine $(QEMU_MACHINE) -cpu $(QEMU_CPU) \
-	        -kernel $(TARGET).elf -nographic -serial mon:stdio \
-	        -m $(QEMU_MEM) -s -S
-
-qemu-gdb: $(TARGET).elf
-	$(QEMU) -machine $(QEMU_MACHINE) -cpu $(QEMU_CPU) \
-	        -kernel $(TARGET).elf -nographic -serial mon:stdio \
-	        -m $(QEMU_MEM) -s -S &
-
-qemu-test: $(TARGET).elf
-	echo "Starting automated tests in QEMU..."
-	$(QEMU) -machine $(QEMU_MACHINE) -cpu $(QEMU_CPU) \
-	        -kernel $(TARGET).elf -nographic -serial stdio \
-	        -m $(QEMU_MEM) | tee test_output.log
-
 clean:
 	rm -f $(OBJS) $(TARGET).elf $(TARGET).bin $(TARGET).elf.disasm
 
-.PHONY: all clean qemu qemu-debug qemu-gdb qemu-test
+.PHONY: all clean
