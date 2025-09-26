@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "../include/heap.h"
 
 #define HEAP_SIZE       (1024 * 10) // 10 KB heap
@@ -47,3 +48,4 @@ uint32_t heap_get_free_size(void) {
 uint32_t heap_get_used_size(void) {
     return HEAP_SIZE - heap_get_free_size();
 }
+
