@@ -35,9 +35,9 @@ SRCS = \
     lib/string.c \
     lib/printf.c \
     lib/assert.c \
-    tests/test_kernel.c \
-    tests/test_memory.c \
-    tests/test_stress.c \
+    test/test_kernel.c \
+    test/test_memory.c \
+    test/test_stress.c \
     apps/main.c
 
 OBJS = $(SRCS:.c=.o)
@@ -64,3 +64,4 @@ clean:
 	rm -f $(OBJS) $(TARGET).elf $(TARGET).bin $(TARGET).elf.disasm
 
 .PHONY: all clean
+
