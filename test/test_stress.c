@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "../include/kernel.h"
 #include "../include/task.h"
 #include "../include/printf.h"
