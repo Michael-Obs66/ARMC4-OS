@@ -3,6 +3,7 @@
 #include "../include/task.h"
 #include "../include/mm.h"
 #include "../include/string.h"
+#include "../include/scheduler.h"
 
 #define MAX_QUEUES 10
 #define MAX_MESSAGES 32
@@ -105,6 +106,7 @@ void ipc_semaphore_signal(int sem_id)
 {
     // Simplified implementation
 }
+
 
 
 
