@@ -3,6 +3,15 @@
 
 #include <stdint.h>
 
+// Konfigurasi heap
+#ifndef HEAP_SIZE
+#define HEAP_SIZE (1024 * 10)      // 10 KB heap default
+#endif
+
+#ifndef HEAP_BLOCK_SIZE
+#define HEAP_BLOCK_SIZE 32         // ukuran tiap block
+#endif
+
 // Heap management functions
 void heap_init(void);
 void *heap_alloc(uint32_t size);
@@ -18,3 +27,4 @@ typedef struct heap_block {
 } heap_block_t;
 
 #endif
+
