@@ -1,8 +1,8 @@
-#include "../lib/task.h"
-#include "../lib/kernel.h"
-#include "../lib/mm.h"
-#include "../lib/string.h"
-#include "../lib/printf.h"
+#include "../include/task.h"
+#include "../include/kernel.h"
+#include "../include/mm.h"
+#include "../include/string.h"
+#include "../include/printf.h"
 
 static uint32_t next_pid = 1;
 static task_t task_table[MAX_TASKS];
@@ -113,4 +113,5 @@ task_t *task_get_by_pid(uint32_t pid)
     }
     return NULL;
 }
+
 
