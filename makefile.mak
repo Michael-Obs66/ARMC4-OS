@@ -16,6 +16,8 @@ CFLAGS += -O2 -g -Wall -Wextra
 CFLAGS += -Iinclude -ffreestanding -nostdlib
 CFLAGS += -DSystemCoreClock=16000000UL
 CFLAGS += -Icmsis_core
+CFLAGS += -D__FPU_PRESENT=1U
+CFLAGS += -D__NVIC_PRIO_BITS=4U
 
 ASFLAGS = -mcpu=$(CPU) -mthumb
 
@@ -73,5 +75,6 @@ renode: $(ELF)
 	renode -e "mach create; machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl; sysbus LoadELF @$(ELF); start"
 
 .PHONY: all clean flash debug
+
 
 
