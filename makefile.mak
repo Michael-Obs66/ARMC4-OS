@@ -3,9 +3,8 @@
 # ================================
 CC      = arm-none-eabi-gcc
 AS      = arm-none-eabi-as
-LD      = arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
-OBJDUMP = arm-none-eabi-objdump
+LD      = arm-none-eabi-ld
 
 # ================================
 # MCU Specific
@@ -45,6 +44,7 @@ SRCS = boot/startup.s \
        apps/blinky.c \
        apps/shell.c
 
+# Object files
 OBJS = $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
 
@@ -86,8 +86,4 @@ flash: $(BIN)
 debug:
 	arm-none-eabi-gdb $(ELF)
 
-renode: $(ELF)
-	renode -e "mach create; machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl; sysbus LoadELF @$(ELF); start"
-
-.PHONY: all clean flash debug renode
-
+.PHONY: all clean flash debug
