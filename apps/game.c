@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include "drivers.h"
 #include "oled.h"
+#include "stm32f4xx.h" 
 
 // Simple Pong-like game
 typedef struct {
