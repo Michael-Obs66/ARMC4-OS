@@ -1,6 +1,6 @@
 #include "kernel.h"
 #include "task.h"
-
+#include "stm32f4xx.h" 
 task_t* task_create(void (*func)(void*), void *arg, uint32_t priority) {
     static uint32_t task_id_counter = 0;
     
@@ -54,3 +54,4 @@ void task_resume(uint32_t task_id) {
         }
     }
 }
+
