@@ -27,11 +27,16 @@ typedef struct task {
     struct task *prev;
 } task_t;
 
+// Task management
 void task_init(void);
 task_t *task_create(void (*entry)(void*), void *arg, uint8_t priority);
 void task_exit(void);
 void task_sleep(uint32_t ticks);
 void task_wakeup_sleeping(void);
 task_t *task_get_by_pid(uint32_t pid);
+
+// **Task switching functions required by scheduler**
+void task_switch(task_t *prev, task_t *next);
+void task_switch_to(task_t *next);
 
 #endif
