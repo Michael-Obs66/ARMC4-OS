@@ -1,6 +1,6 @@
 #include "kernel.h"
 #include <stdbool.h>
-
+#include "stm32f4xx.h" 
 #define MAX_QUEUES 4
 #define QUEUE_SIZE 16
 
@@ -50,3 +50,4 @@ bool message_receive(uint32_t queue_id, uint32_t *message) {
     
     return true;
 }
+
