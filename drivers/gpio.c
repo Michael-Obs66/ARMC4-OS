@@ -1,4 +1,4 @@
-#include "../lib/drivers.h"
+#include "../include/drivers.h"
 
 #define GPIOA_BASE 0x48000000
 #define GPIOA_MODER (*((volatile uint32_t *)(GPIOA_BASE + 0x00)))
@@ -55,4 +55,5 @@ uint8_t gpio_get(uint8_t port, uint8_t pin)
     
     return (*idr >> pin) & 1;
 }
+
 
