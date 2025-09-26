@@ -1,28 +1,32 @@
 #include "kernel.h"
 #include "task.h"
-#include "drivers/gpio.h" // contoh untuk LED
+#include "gpio.h"
 
-// Contoh task: Blinky LED
+// contoh task blinky
 void blinky_task(void *arg) {
-    (void)arg; // hapus warning unused
+    (void)arg; // menghindari warning unused parameter
+
     while (1) {
-        gpio_toggle_pin(5); // misal LED di pin 5
-        for (volatile int i = 0; i < 1000000; i++); // delay kasar
-        task_yield(); // beri kesempatan task lain
+        gpio_toggle_pin(5); // toggle LED
+        for (volatile int i=0; i<100000; i++); // delay sederhana
+        task_yield();
     }
 }
 
+// main system stub
 int main(void) {
-    // Inisialisasi kernel dan driver
-    kernel_init();
-    gpio_init(); // init GPIO
+    // inisialisasi hardware
+    gpio_init();
 
-    // Buat task
+    // kernel init
+    kernel_init();
+
+    // buat task blinky
     create_task(blinky_task, NULL, 1);
 
-    // Mulai scheduler
+    // start scheduler
     kernel_start();
 
-    // Main seharusnya tidak kembali
     while (1);
+    return 0;
 }
