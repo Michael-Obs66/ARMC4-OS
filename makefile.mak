@@ -31,6 +31,9 @@ SRCS = \
     lib/string.c \
     lib/printf.c \
     lib/assert.c \
+    tests/test_kernel.c \
+    tests/test_memory.c \
+    tests/test_stress.c \
     apps/main.c
 
 # Objects
@@ -61,3 +64,4 @@ flash: $(TARGET).bin
     openocd -f interface/stlink-v2.cfg -f target/stm32f4x.cfg -c "program $(TARGET).bin verify reset exit 0x08000000"
 
 .PHONY: all clean flash
+
