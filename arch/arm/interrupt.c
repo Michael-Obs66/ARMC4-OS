@@ -27,12 +27,6 @@ void interrupt_disable(int irq)
     cortex_m4_disable_irq(irq);
 }
 
-// Default interrupt handler
-void Default_Handler(void)
-{
-    while (1);
-}
-
 // IRQ Handlers
 void USART1_IRQHandler(void) 
 {
@@ -54,6 +48,7 @@ void EXTI0_IRQHandler(void)
         interrupt_handlers[EXTI0_IRQn]();
     }
 }
+
 
 
 
