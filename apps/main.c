@@ -43,7 +43,7 @@ void system_monitor_task(void *arg)
     }
 }
 
-int apps_main(void)
+int app_main(void)
 {
     // Kernel will start automatically
     
