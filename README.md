@@ -14,18 +14,7 @@ This project is built from scratch using **C** and **ARM Assembly**, with a focu
 ## 🚀 Why This Microkernel OS?
 
 Unlike existing RTOS solutions, this project aims to combine **lightweight performance** with **modular security**.  
-Here’s how it compares with well-known technologies:
 
-| Feature / OS        | FreeRTOS ⚡ | Zephyr 🌐 | μKernelOS 🔒 |
-|---------------------|------------|-----------|------------------|
-| **Kernel Type**     | Monolithic | Hybrid    | Pure Microkernel |
-| **Footprint**       | Ultra-small (<10KB) | Medium–Large (100KB+) | Small–Medium (scalable) |
-| **Task Isolation**  | ❌ Limited | ⚠️ Partial | ✅ Strong (drivers isolated) |
-| **Real-time**       | ✅ Deterministic | ✅ RT-capable | ✅ RT-capable |
-| **Networking**      | ⚠️ Limited (needs extension) | ✅ Built-in (TCP/IP, Bluetooth, etc.) | ⚠️ Custom / extendable |
-| **Security**        | ❌ Minimal | ⚠️ Moderate | ✅ Higher (fault isolation) |
-| **Modularity**      | ❌ Low     | ✅ High    | ✅ High |
-| **Best Use Case**   | Ultra-light IoT | Complex IoT & networking | Mission-critical IoT (secure + efficient) |
 ---
 ### ✨ Key Advantages of MicrokernelOS
 - 🔒 **Secure by design**: Drivers and services run in isolated spaces.  
