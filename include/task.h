@@ -34,7 +34,7 @@ typedef struct task {
 } task_t;
 
 // Deklarasi tabel task global
-extern task_t task_table[MAX_TASKS];
+void task_switch_to(task_t *task); 
 
 // API task
 void task_init(void);
