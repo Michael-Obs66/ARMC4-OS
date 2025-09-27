@@ -26,14 +26,16 @@ SECTIONS
 
     _data_load = LOADADDR(.data);
 
-    .data :
-    {
-        . = ALIGN(4);
-        _data_start = .;
-        *(.data)
-        *(.data*)
-        . = ALIGN(4);
-        _data_end = .;
+PROVIDE(_data_load_start = LOADADDR(.data));
+
+   .data : AT(ADDR(.text) + SIZEOF(.text))     /* atau gunakan LOADADDR nanti */
+   {
+       . = ALIGN(4);
+       _data_start = .;        /* awal data di RAM */
+       *(.data)
+       *(.data*)
+       . = ALIGN(4);
+       _data_end = .;          /* akhir data di RAM */
     } >RAM AT>FLASH
 
     .bss :
@@ -62,3 +64,4 @@ SECTIONS
         *(.note.gnu.build-id)
     }
 }
+
