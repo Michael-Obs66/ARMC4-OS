@@ -1,18 +1,25 @@
+/* ---------- Memory Regions ---------- */
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 512K
-    RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
+    FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 512K
+    RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
+/* simbol penting untuk startup.s */
+_estack = ORIGIN(RAM) + LENGTH(RAM);   /* initial SP di top of RAM */
+
+/* ---------- Sections ---------- */
 SECTIONS
 {
+    /* Vector Table */
     .isr_vector :
     {
         . = ALIGN(4);
         KEEP(*(.isr_vector))
         . = ALIGN(4);
-    } >FLASH
+    } > FLASH
 
+    /* Code & read-only data */
     .text :
     {
         . = ALIGN(4);
@@ -22,23 +29,24 @@ SECTIONS
         *(.rodata*)
         . = ALIGN(4);
         _etext = .;
-    } >FLASH
+    } > FLASH
 
-    _data_load = LOADADDR(.data);
+    /* Symbol untuk copy data dari FLASH ke RAM */
+    PROVIDE(_data_load_start = LOADADDR(.data));
 
-PROVIDE(_data_load_start = LOADADDR(.data));
+    /* Data section di RAM dengan isi dari FLASH */
+    .data : AT(ADDR(.text) + SIZEOF(.text))
+    {
+        . = ALIGN(4);
+        _data_start = .;
+        *(.data)
+        *(.data*)
+        . = ALIGN(4);
+        _data_end = .;
+    } > RAM AT > FLASH
 
-   .data : AT(ADDR(.text) + SIZEOF(.text))     /* atau gunakan LOADADDR nanti */
-   {
-       . = ALIGN(4);
-       _data_start = .;        /* awal data di RAM */
-       *(.data)
-       *(.data*)
-       . = ALIGN(4);
-       _data_end = .;          /* akhir data di RAM */
-    } >RAM AT>FLASH
-
-    .bss :
+    /* BSS section di RAM */
+    .bss (NOLOAD) :
     {
         . = ALIGN(4);
         _bss_start = .;
@@ -47,16 +55,18 @@ PROVIDE(_data_load_start = LOADADDR(.data));
         *(COMMON)
         . = ALIGN(4);
         _bss_end = .;
-    } >RAM
+    } > RAM
 
+    /* Optional: reserved stack space (tidak mempengaruhi _estack) */
     .stack (NOLOAD) :
     {
         . = ALIGN(8);
-        _estack = .;
-        . = . + 0x2000; /* 8KB stack */
-        _stack_top = .;
-    } >RAM
+        _stack_start = .;
+        . = . + 0x2000;      /* reserve 8 KB */
+        _stack_end = .;
+    } > RAM
 
+    /* Buang section yang tidak dipakai */
     /DISCARD/ :
     {
         *(.ARM.exidx*)
@@ -64,4 +74,3 @@ PROVIDE(_data_load_start = LOADADDR(.data));
         *(.note.gnu.build-id)
     }
 }
-
