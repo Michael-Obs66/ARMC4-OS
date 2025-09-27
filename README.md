@@ -40,36 +40,13 @@ Unlike existing RTOS solutions, this project aims to combine **lightweight perfo
 
 ```
 μKernelOS/
-├── boot/
-│   ├── startup.s
-│   ├── linker.ld
-│   └── boot.c
-├── kernel/
-│   ├── kernel.c
-│   ├── scheduler.c
-│   ├── task.c
-│   └── ipc.c
-├── arch/arm/
-│   ├── cortex_m4.c
-│   ├── context_switch.s
-│   └── interrupt.c
-├── mm/
-│   ├── mm.c
-│   ├── heap.c
-│   └── mpu.c
-├── drivers/
-│   ├── uart.c
-│   ├── gpio.c
-│   ├── timer.c
-│   └── oled.c
-├── apps/
-│   ├── blinky.c
-│   ├── shell.c
-│   └── game.c
-├── include/
-│   ├── kernel.h
-│   ├── task.h
-│   └── drivers.h
+├── boot/ # startup.s, linker.ld, boot.c
+├── kernel/ # kernel.c, scheduler.c, task.c, ipc.c
+├── arch/arm/ # cortex_m4.c, context_switch.s, interrupt.c
+├── mm/ # mm.c, heap.c, mpu.c
+├── drivers/ # uart.c, gpio.c, timer.c, oled.c
+├── apps/ # blinky.c, shell.c, game.c
+├── include/ # kernel.h, task.h, drivers.h
 └── Makefile
 ```
 
