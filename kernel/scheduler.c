@@ -3,10 +3,17 @@
 #include "../include/task.h"
 #include "../include/scheduler.h"
 #include "../include/printf.h"
+#include "../include/mm.h"       // untuk kfree()
 
-static task_t *current_task = NULL;
+// Variabel global agar bisa diakses context_switch.s
+task_t *current_task = NULL;
+
+// Queue siap jalan (circular doubly-linked list)
 static task_t *ready_queue = NULL;
 static uint32_t task_count = 0;
+
+
+/* ---------------- Scheduler Core ---------------- */
 
 void scheduler_init(void)
 {
@@ -44,9 +51,23 @@ void scheduler_remove_task(task_t *task)
     task_count--;
 }
 
+/* Pilih task berikutnya (round-robin) */
+task_t *pick_next_task(void)
+{
+    if (ready_queue == NULL)
+        return NULL;
+
+    task_t *next = ready_queue;
+    ready_queue  = ready_queue->next;
+    return next;
+}
+
+
+/* -------------- Scheduler API ------------------ */
+
 void schedule(void)
 {
-    
+    // Bersihkan task zombie
     for (int i = 0; i < MAX_TASKS; i++) {
         if (task_table[i].state == TASK_ZOMBIE) {
             if (task_table[i].stack_ptr) {
@@ -57,21 +78,19 @@ void schedule(void)
         }
     }
 
-    
+    // Pilih task berikutnya
     task_t *next = pick_next_task();
     if (next != NULL) {
-        context_switch(next);
+        context_switch(next);      // ganti ke task baru
     }
 }
 
 void scheduler_tick(void)
 {
     if (current_task != NULL) {
-        current_task->time_slice--;
-        
-        if (current_task->time_slice == 0) {
+        if (--current_task->time_slice == 0) {
             current_task->time_slice = TASK_TIME_SLICE;
-            schedule();
+            schedule();             // pre-empt
         }
     }
 }
@@ -80,8 +99,8 @@ void scheduler_start(void)
 {
     if (ready_queue != NULL) {
         current_task = ready_queue;
-        ready_queue = ready_queue->next;
-        task_switch_to(current_task);
+        ready_queue  = ready_queue->next;
+        task_switch_to(current_task);   // ganti ke task pertama
     }
 }
 
@@ -96,6 +115,11 @@ uint32_t scheduler_get_task_count(void)
 }
 
 
+/* --------- Dummy untuk context switch ---------- */
+/* NOTE: Ganti dengan ASM di context_switch.s nanti */
 
-
-
+void context_switch(task_t *next)
+{
+    current_task = next;
+    // TODO: isi mekanisme switch register di assembly
+}
