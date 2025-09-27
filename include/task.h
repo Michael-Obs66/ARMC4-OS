@@ -14,8 +14,9 @@ typedef enum {
     TASK_READY,
     TASK_RUNNING,
     TASK_SLEEPING,
+    TASK_BLOCKED,
     TASK_ZOMBIE
-} task_state_t;
+} task_state_t; 
 
 // Struktur task
 typedef struct task {
