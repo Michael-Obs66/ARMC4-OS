@@ -5,8 +5,8 @@ MEMORY
     RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
-/* simbol penting untuk startup.s */
-_estack = ORIGIN(RAM) + LENGTH(RAM);   /* initial SP di top of RAM */
+/* Initial stack pointer di top of RAM */
+_estack = ORIGIN(RAM) + LENGTH(RAM);
 
 /* ---------- Sections ---------- */
 SECTIONS
@@ -19,7 +19,7 @@ SECTIONS
         . = ALIGN(4);
     } > FLASH
 
-    /* Code & read-only data */
+    /* Kode program & read-only data */
     .text :
     {
         . = ALIGN(4);
@@ -28,14 +28,14 @@ SECTIONS
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);
-        _etext = .;
+        _etext = .;               /* akhir .text di FLASH */
     } > FLASH
 
-    /* Symbol untuk copy data dari FLASH ke RAM */
-    PROVIDE(_data_load_start = LOADADDR(.data));
+    /* Simbol untuk proses copy data dari FLASH ke RAM */
+    _data_load_start = LOADADDR(.data);
 
-    /* Data section di RAM dengan isi dari FLASH */
-    .data : AT(ADDR(.text) + SIZEOF(.text))
+    /* Data section di RAM, isi di-*load* dari FLASH */
+    .data : AT ( _etext )
     {
         . = ALIGN(4);
         _data_start = .;
@@ -43,9 +43,9 @@ SECTIONS
         *(.data*)
         . = ALIGN(4);
         _data_end = .;
-    } > RAM AT > FLASH
+    } > RAM
 
-    /* BSS section di RAM */
+    /* Variabel tak terinisialisasi di RAM */
     .bss (NOLOAD) :
     {
         . = ALIGN(4);
@@ -57,16 +57,16 @@ SECTIONS
         _bss_end = .;
     } > RAM
 
-    /* Optional: reserved stack space (tidak mempengaruhi _estack) */
+    /* Stack opsional */
     .stack (NOLOAD) :
     {
         . = ALIGN(8);
         _stack_start = .;
-        . = . + 0x2000;      /* reserve 8 KB */
+        . = . + 0x2000;     /* reserve 8 KB stack */
         _stack_end = .;
     } > RAM
 
-    /* Buang section yang tidak dipakai */
+    /* Hapus section yang tidak dipakai */
     /DISCARD/ :
     {
         *(.ARM.exidx*)
