@@ -6,17 +6,23 @@
 #include "../include/printf.h"
 #include "../include/scheduler.h"
 
-static uint32_t next_pid = 1;
-static task_t task_table[MAX_TASKS];
+uint32_t next_pid = 1;                  
+task_t task_table[MAX_TASKS];           
 
 void task_init(void)
 {
     memset(task_table, 0, sizeof(task_table));
+    for (int i = 0; i < MAX_TASKS; i++) {
+        task_table[i].state = TASK_FREE;
+        task_table[i].next = NULL;
+        task_table[i].prev = NULL;
+    }
+    next_pid = 1;
 }
 
 task_t *task_create(void (*entry)(void*), void *arg, uint8_t priority)
 {
-    // Find free task slot
+    // Cari slot task kosong
     task_t *task = NULL;
     for (int i = 0; i < MAX_TASKS; i++) {
         if (task_table[i].state == TASK_FREE) {
@@ -24,52 +30,42 @@ task_t *task_create(void (*entry)(void*), void *arg, uint8_t priority)
             break;
         }
     }
-    
-    if (task == NULL) {
-        return NULL;
-    }
-    
-    // Initialize task structure
-    task->pid = next_pid++;
-    task->priority = priority;
-    task->state = TASK_READY;
+    if (task == NULL) return NULL;
+
+    // Inisialisasi struktur task
+    task->pid       = next_pid++;
+    task->priority  = priority;
+    task->state     = TASK_READY;
     task->time_slice = TASK_TIME_SLICE;
-    task->stack_ptr = (uint32_t*)kmalloc(TASK_STACK_SIZE);
-    
-    if (task->stack_ptr == NULL) {
-        return NULL;
-    }
-    
-    // Initialize stack for context switching
+    task->sleep_ticks = 0;
+    task->next = NULL;
+    task->prev = NULL;
+
+    // Alokasi stack
+    task->stack_ptr = (uint32_t*)kmalloc(TASK_STACK_SIZE * sizeof(uint32_t));
+    if (task->stack_ptr == NULL) return NULL;
+
+    // Inisialisasi stack frame untuk context switch
     uint32_t *sp = task->stack_ptr + TASK_STACK_SIZE - 16;
-    
-    // Initialize stack frame for exception return
-    sp[0] = 0x01000000; // xPSR
-    sp[1] = (uint32_t)entry; // PC
-    sp[2] = 0xFFFFFFFE; // LR
-    sp[3] = 0; // R12
-    sp[4] = 0; // R3
-    sp[5] = 0; // R2
-    sp[6] = 0; // R1
-    sp[7] = (uint32_t)arg; // R0
-    
-    // Remaining registers
-    sp[8] = 0; // R11
-    sp[9] = 0; // R10
-    sp[10] = 0; // R9
-    sp[11] = 0; // R8
-    sp[12] = 0; // R7
-    sp[13] = 0; // R6
-    sp[14] = 0; // R5
-    sp[15] = 0; // R4
-    
+
+    sp[0]  = 0x01000000;            // xPSR (Thumb bit)
+    sp[1]  = (uint32_t)entry;       // PC (alamat fungsi task)
+    sp[2]  = 0xFFFFFFFD;            // LR (return ke thread mode, PSP)
+    sp[3]  = 0;                     // R12
+    sp[4]  = 0;                     // R3
+    sp[5]  = 0;                     // R2
+    sp[6]  = 0;                     // R1
+    sp[7]  = (uint32_t)arg;         // R0 (argumen)
+
+    // Sisa register R4-R11
+    for (int i = 8; i < 16; i++)
+        sp[i] = 0;
+
     task->sp = sp;
-    
-    // Add to scheduler
+
+    // Tambahkan ke scheduler
     scheduler_add_task(task);
-    
     printf("Task %d created\r\n", task->pid);
-    
     return task;
 }
 
@@ -79,6 +75,13 @@ void task_exit(void)
     if (current != NULL) {
         current->state = TASK_ZOMBIE;
         scheduler_remove_task(current);
+
+        // Bebaskan stack agar tidak leak
+        if (current->stack_ptr) {
+            kfree(current->stack_ptr);
+            current->stack_ptr = NULL;
+        }
+
         printf("Task %d exited\r\n", current->pid);
     }
     schedule();
@@ -90,6 +93,7 @@ void task_sleep(uint32_t ticks)
     if (current != NULL) {
         current->sleep_ticks = ticks;
         current->state = TASK_SLEEPING;
+        scheduler_remove_task(current);
         schedule();
     }
 }
@@ -100,6 +104,7 @@ void task_wakeup_sleeping(void)
         if (task_table[i].state == TASK_SLEEPING) {
             if (--task_table[i].sleep_ticks == 0) {
                 task_table[i].state = TASK_READY;
+                scheduler_add_task(&task_table[i]);
             }
         }
     }
@@ -114,8 +119,3 @@ task_t *task_get_by_pid(uint32_t pid)
     }
     return NULL;
 }
-
-
-
-
-
