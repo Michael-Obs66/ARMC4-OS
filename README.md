@@ -28,7 +28,6 @@ Unlike existing RTOS solutions, this project aims to combine **lightweight perfo
 - 🔹 **Preemptive Scheduler** – basic round-robin task scheduling.  
 - 🔹 **Task Management** – create, switch, and terminate tasks.  
 - 🔹 **Inter-Process Communication (IPC)** – simple message passing.  
-- 🔹 **Memory Protection (MPU)** – experimental memory safety support.  
 - 🔹 **UART Driver** – minimal serial I/O for debugging and communication.  
 - 🔹 **Interrupt Handling** – basic Cortex-M4 interrupt service routines.  
 - 🔹 **Heap Management** – dynamic memory allocation.  
