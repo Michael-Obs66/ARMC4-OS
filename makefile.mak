@@ -1,20 +1,28 @@
-# Toolchain
-CC = arm-none-eabi-gcc
-AS = arm-none-eabi-as
-LD = arm-none-eabi-ld
+# --------------------------------------------------
+#  Toolchain
+# --------------------------------------------------
+CC      = arm-none-eabi-gcc
+AS      = arm-none-eabi-as
 OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
 
-# Flags untuk Cortex-M4
-CPU = cortex-m4
-CFLAGS = -mcpu=$(CPU) -mthumb -Wall -O2 -nostdlib -ffreestanding \
-         -fno-common -ffunction-sections -fdata-sections \
-         -Iinclude -I. -Ikernel -Iarch/arm -Imm -Idrivers -Ilib
+CPU     = cortex-m4
+
+# --------------------------------------------------
+#  Flags
+# --------------------------------------------------
+CFLAGS  = -mcpu=$(CPU) -mthumb -Wall -O2 -nostdlib -ffreestanding \
+          -fno-common -ffunction-sections -fdata-sections \
+          -Iinclude -I. -Ikernel -Iarch/arm -Imm -Idrivers -Ilib
+
 ASFLAGS = -mcpu=$(CPU) -mthumb
-LDFLAGS = -T boot/linker.ld -nostdlib -nostartfiles \
+
+LDFLAGS = -T boot/linker.ld -nostartfiles -nostdlib \
           --specs=nosys.specs -Wl,--gc-sections
 
-# Sources
+# --------------------------------------------------
+#  Source files
+# --------------------------------------------------
 SRCS = \
     boot/startup.s \
     boot/boot.c \
@@ -40,12 +48,16 @@ SRCS = \
     test/test_stress.c \
     apps/main.c
 
+# otomatis ganti ekstensi
 OBJS = $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
 
 TARGET = ukernelos
 
-all: $(TARGET).bin $(TARGET).elf
+# --------------------------------------------------
+#  Rules
+# --------------------------------------------------
+all: $(TARGET).elf $(TARGET).bin
 
 $(TARGET).elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
@@ -54,9 +66,11 @@ $(TARGET).elf: $(OBJS)
 $(TARGET).bin: $(TARGET).elf
 	$(OBJCOPY) -O binary $< $@
 
+# compile .c → .o
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+# assemble .s → .o
 %.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
@@ -64,4 +78,3 @@ clean:
 	rm -f $(OBJS) $(TARGET).elf $(TARGET).bin $(TARGET).elf.disasm
 
 .PHONY: all clean
-
