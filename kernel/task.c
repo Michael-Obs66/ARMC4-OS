@@ -77,8 +77,7 @@ void task_exit(void)
 {
     task_t *current = scheduler_get_current_task();
     if (current != NULL) {
-        current->state = TASK_FREE;
-        kfree(current->stack_ptr);
+        current->state = TASK_ZOMBIE;
         scheduler_remove_task(current);
         printf("Task %d exited\r\n", current->pid);
     }
@@ -115,6 +114,7 @@ task_t *task_get_by_pid(uint32_t pid)
     }
     return NULL;
 }
+
 
 
 
