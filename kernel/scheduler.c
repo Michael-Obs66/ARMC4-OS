@@ -46,22 +46,21 @@ void scheduler_remove_task(task_t *task)
 
 void schedule(void)
 {
-    if (ready_queue == NULL || task_count == 0) {
-        return;
-    }
     
-    task_t *next_task = ready_queue;
-    task_t *prev_task = current_task;
-    
-    if (prev_task != next_task) {
-        current_task = next_task;
-        ready_queue = next_task->next;
-        
-        if (prev_task != NULL) {
-            task_switch(prev_task, next_task);
-        } else {
-            task_switch_to(next_task);
+    for (int i = 0; i < MAX_TASKS; i++) {
+        if (task_table[i].state == TASK_ZOMBIE) {
+            if (task_table[i].stack_ptr) {
+                kfree(task_table[i].stack_ptr);
+                task_table[i].stack_ptr = NULL;
+            }
+            task_table[i].state = TASK_FREE;
         }
+    }
+
+    
+    task_t *next = pick_next_task();
+    if (next != NULL) {
+        context_switch(next);
     }
 }
 
@@ -95,6 +94,7 @@ uint32_t scheduler_get_task_count(void)
 {
     return task_count;
 }
+
 
 
 
