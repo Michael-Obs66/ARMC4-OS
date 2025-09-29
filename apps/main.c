@@ -10,7 +10,26 @@ extern void run_memory_tests(void);
 extern void run_stress_tests(void);
 extern void test_runner_task(void *arg);
 
-// Example application tasks
+// =========================
+//  Banner Boot Success
+// =========================
+static void print_boot_banner(void)
+{
+    printf("\r\n");
+    printf("=========================================\r\n");
+    printf("   ____              _       \r\n");
+    printf("  | __ )  ___   ___ | |_ ___ \r\n");
+    printf("  |  _ \\ / _ \\ / _ \\| __/ _ \\\r\n");
+    printf("  | |_) | (_) | (_) | ||  __/\r\n");
+    printf("  |____/ \\___/ \\___/ \\__\\___|\r\n");
+    printf("                               \r\n");
+    printf("        Boot  SUCCESS !        \r\n");
+    printf("=========================================\r\n\r\n");
+}
+
+// =========================
+//  Example application tasks
+// =========================
 void app_task1(void *arg)
 {
     int counter = 0;
@@ -39,28 +58,29 @@ void system_monitor_task(void *arg)
         printf("Active tasks: %d\r\n", scheduler_get_task_count());
         printf("=====================\r\n");
         
-        task_sleep(10000); // Report every 10 seconds
+        task_sleep(10000); // Report every 10 detik
     }
 }
 
+// =========================
+//  app_main()
+// =========================
 int app_main(void)
 {
-    // Kernel will start automatically
-    
-    // Create test runner task (runs tests automatically)
+    // Tampilkan banner boot di UART
+    print_boot_banner();
+
+    // Kernel akan mulai otomatis
+
+    // Buat test runner task
     task_create(test_runner_task, NULL, 5);
-    
-    // Create system monitor task
+
+    // Buat system monitor task
     task_create(system_monitor_task, NULL, 1);
-    
-    // Create application tasks
+
+    // Buat application tasks
     task_create(app_task1, NULL, 2);
     task_create(app_task2, NULL, 3);
-    
-    // Uncomment to run specific test suites manually:
-    // run_all_tests();
-    // run_memory_tests();
-    // run_stress_tests();
-    
+
     return 0;
 }
