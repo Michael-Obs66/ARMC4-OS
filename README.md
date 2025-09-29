@@ -84,7 +84,7 @@ You can test **μKernelOS** on:
   renode
   mach create
   machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl
-  sysbus LoadELF @kernel.elf
+  sysbus LoadELF @ukernelos.elf
   showAnalyzer sysbus.usart1
   start
   ```
