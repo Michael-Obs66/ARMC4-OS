@@ -3,6 +3,7 @@
 #include "../include/task.h"
 #include "../include/mm.h"
 #include "../include/scheduler.h"
+#include "../include/uart.h"
 
 // Test functions
 extern void run_all_tests(void);
