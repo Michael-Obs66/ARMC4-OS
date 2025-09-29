@@ -56,7 +56,7 @@ Unlike existing RTOS solutions, this project aims to combine **lightweight perfo
 ### Prerequisites
 - **ARM GCC Toolchain** (`arm-none-eabi-gcc`, `arm-none-eabi-ld`, `arm-none-eabi-objcopy`)  
 - **Make** utility  
-- (Optional) **QEMU** or hardware board (STM32F4 or equivalent) for testing  
+- (Optional) **Renode** or hardware board (STM32F4 or equivalent) for testing  
 
 ### Build
 ```bash
@@ -78,11 +78,8 @@ Or upload with your preferred flashing tool.
 
 You can test **μKernelOS** on:  
 - **Real hardware** – STM32F4 or similar Cortex-M4 boards.  
-- **Emulator** – run with QEMU:  
-  ```bash
-  qemu-system-arm -M stm32-p103 -kernel kernel.elf -serial stdio
-  ```
 - **Emulator** - run with RENODE:
+  1. make run_kernel.resc file :
   ```bash
   renode
   mach create
@@ -90,6 +87,10 @@ You can test **μKernelOS** on:
   sysbus LoadELF @kernel.elf
   showAnalyzer sysbus.usart2
   start
+  ```
+  2. Running .resc file :
+  ```bash
+  renode run_kernel.resc
   ```
 ---
 
