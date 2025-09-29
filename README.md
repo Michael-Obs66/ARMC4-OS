@@ -81,11 +81,10 @@ You can test **μKernelOS** on:
 - **Emulator** - run with RENODE:
   1. make run_kernel.resc file :
   ```bash
-  renode
   mach create
   machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl
   sysbus LoadELF @ukernelos.elf
-  showAnalyzer sysbus.usart1
+
   start
   ```
   2. Running .resc file :
