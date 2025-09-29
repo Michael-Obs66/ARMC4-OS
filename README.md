@@ -85,7 +85,7 @@ You can test **μKernelOS** on:
   mach create
   machine LoadPlatformDescription @platforms/boards/stm32f4_discovery.repl
   sysbus LoadELF @kernel.elf
-  showAnalyzer sysbus.usart2
+  showAnalyzer sysbus.usart1
   start
   ```
   2. Running .resc file :
