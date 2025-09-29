@@ -21,6 +21,6 @@ void scheduler_start(void);                // Mulai eksekusi task pertama
 void context_switch(task_t *next);
 task_t *scheduler_get_current_task(void);  // Ambil task yang sedang running
 uint32_t scheduler_get_task_count(void);   // Ambil jumlah task aktif
-
+uint32_t kernel_get_ticks(void);
 #endif /* SCHEDULER_H */
 
