@@ -1,5 +1,6 @@
 # μKernelOS
-
+> **AI-Augmented Firmware & IoT Security**  
+> A lightweight **microkernel-based OS** for ARM Cortex-M4 — combining simplicity, modularity, and embedded security for IoT devices.
 <p align="center">
   <img src="https://img.shields.io/badge/ARM-Cortex--M4-blue?style=for-the-badge&logo=arm" />
   <img src="https://img.shields.io/badge/Microkernel-OS-green?style=for-the-badge" />
