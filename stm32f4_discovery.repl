@@ -1,33 +1,33 @@
 peripherals:
-  cpu: CPU.CortexM @ sysbus
-    cpuType: "cortex-m4"
-    PerformanceInMips: 100
+    cpu: CPU.CortexM @ sysbus
+        cpuType: "cortex-m4"
+        PerformanceInMips: 100
 
-  ram: Memory.MappedMemory @ sysbus 0x20000000
-    size: 0x00030000
+    ram: Memory.MappedMemory @ sysbus 0x20000000
+        size: 0x00030000
 
-  flash: Memory.MappedMemory @ sysbus 0x08000000
-    size: 0x00100000
+    flash: Memory.MappedMemory @ sysbus 0x08000000
+        size: 0x00100000
 
-  uart1: UART.PL011 @ sysbus 0x40013800
-    -> cpu@37
-    frequency: 72000000
-  connector Connect uart1 -> sysbus LogConsole
+    uart1: UART.PL011 @ sysbus 0x40013800
+        -> cpu@37
+        frequency: 72000000
+    connector Connect uart1 -> sysbus LogConsole
 
-  i2c1: I2C.GenericI2C @ sysbus 0x40005400
-    -> cpu@31
-  connector Connect i2c1 -> sysbus LogConsole
+    i2c1: I2C.GenericI2C @ sysbus 0x40005400
+        -> cpu@31
+    connector Connect i2c1 -> sysbus LogConsole
 
-  gpioa: Miscellaneous.GPIOModule @ sysbus 0x40020000
-    size: 0x400
+    gpioa: Miscellaneous.GPIOModule @ sysbus 0x40020000
+        size: 0x400
 
-  gpioc: Miscellaneous.GPIOModule @ sysbus 0x40020800
-    size: 0x400
+    gpioc: Miscellaneous.GPIOModule @ sysbus 0x40020800
+        size: 0x400
 
-  led_green: Miscellaneous.LED @ gpioc 13
-  connector Connect led_green -> sysbus LogConsole
+    led_green: Miscellaneous.LED @ gpioc 13
+    connector Connect led_green -> sysbus LogConsole
 
-  nvic: IRQControllers.NVIC @ sysbus 0xE000E100
-    priorities: 240
-    numberOfIRQs: 240
-    cpu: cpu
+    nvic: IRQControllers.NVIC @ sysbus 0xE000E100
+        priorities: 240
+        numberOfIRQs: 240
+        cpu: cpu
