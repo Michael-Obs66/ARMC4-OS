@@ -1,5 +1,6 @@
-mach create "armc4os"
-include @stm32f4_discovery.repl
+mach create "armcsos"
+machine LoadPlatformDescription @stm32f4_discovery.repl
 sysbus LoadELF @ARMC4-OS.elf
 showAnalyzer uart1
 start
+
