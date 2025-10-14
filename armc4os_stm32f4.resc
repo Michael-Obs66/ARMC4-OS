@@ -1,10 +1,6 @@
 using sysbus
-
 mach create "armc4os"
-
 machine LoadPlatformDescription @ "stm32f4_discovery.repl"
-
 sysbus LoadELF @ "ARMC4-OS.elf"
-
-showAnalyzer uart2
+showAnalyzer uart1
 start
