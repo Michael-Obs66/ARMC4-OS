@@ -1,6 +1,15 @@
 using sysbus
 mach create "armc4os"
-machine LoadPlatformDescription @ "stm32f4_discovery.repl"
-sysbus LoadELF @ "ARMC4-OS.elf"
+
+# Load the board platform (.repl)
+include @stm32f4_discovery.repl
+
+# Load ELF firmware
+sysbus LoadELF @ARMC4-OS.elf
+
+# Show UART analyzer
 showAnalyzer uart1
+
+# Start simulation
 start
+
