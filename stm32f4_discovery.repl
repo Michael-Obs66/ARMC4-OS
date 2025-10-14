@@ -1,10 +1,7 @@
-name: "STM32F4-Discovery"
-description: "Virtual STM32F4-Discovery board for ARMC4-OS kernel testing."
-
 using sysbus
 
 # ==========================================
-# CPU Core
+# CPU
 # ==========================================
 cpu: CPU.CortexM @ sysbus
     cpuType: "cortex-m4"
@@ -25,7 +22,6 @@ flash: Memory.MappedMemory @ sysbus 0x08000000
 uart1: UART.PL011 @ sysbus 0x40013800
     -> cpu@37
     frequency: 72000000
-    name: "USART1"
 connector Connect uart1 -> sysbus LogConsole
 
 # ==========================================
@@ -33,30 +29,25 @@ connector Connect uart1 -> sysbus LogConsole
 # ==========================================
 i2c1: I2C.GenericI2C @ sysbus 0x40005400
     -> cpu@31
-    name: "I2C1"
 connector Connect i2c1 -> sysbus LogConsole
 
 # ==========================================
-# GPIOA - TX/RX pins
+# GPIOA
 # ==========================================
 gpioa: Miscellaneous.GPIOModule @ sysbus 0x40020000
     size: 0x400
-    name: "GPIOA"
 
 # ==========================================
-# GPIOC - for LED (PC13)
+# GPIOC (LED on PC13)
 # ==========================================
 gpioc: Miscellaneous.GPIOModule @ sysbus 0x40020800
     size: 0x400
-    name: "GPIOC"
 
-# LED Virtual (PC13)
 led_green: Miscellaneous.LED @ gpioc 13
-    name: "Green LED (PC13)"
 connector Connect led_green -> sysbus LogConsole
 
 # ==========================================
-# NVIC - Interrupt controller
+# NVIC
 # ==========================================
 nvic: IRQControllers.NVIC @ sysbus 0xE000E100
     priorities: 240
