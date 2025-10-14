@@ -4,6 +4,8 @@
 #include "../include/mm.h"
 #include "../include/scheduler.h"
 #include "../include/uart.h"
+#include "../include/oled.h"
+#include "../include/i2c.h"
 
 // Test functions
 extern void run_all_tests(void);
@@ -17,17 +19,16 @@ extern void test_runner_task(void *arg);
 static void print_boot_banner(void)
 {
     printf("\r\n");
-    printf("=========================================\r\n");
-    printf("   ____              _       \r\n");
-    printf("  | __ )  ___   ___ | |_ ___ \r\n");
-    printf("  |  _ \\ / _ \\ / _ \\| __/ _ \\\r\n");
-    printf("  | |_) | (_) | (_) | ||  __/\r\n");
-    printf("  |____/ \\___/ \\___/ \\__\\___|\r\n");
-    printf("                               \r\n");
-    printf("        Boot  SUCCESS !        \r\n");
-    printf("=========================================\r\n\r\n");
+    printf("=============================================================\r\n");
+    printf("       ___    ____  __  ___   ______   _____  _____  _____   \r\n");
+    printf("      / _ |  / __ \\/  |/  /  / __  /  / ___/ / ___/ / ___/   \r\n");
+    printf("     / __ | / /_/ / /|_/ /  / /_/ /  / /__  (__  ) (__  )    \r\n");
+    printf("    /_/ |_| \\____/_/  /_/   \\__,_/   \\___/ /____/ /____/     \r\n");
+    printf("                                                             \r\n");
+    printf("                 Boot SUCCESSFULLY INITIALIZED               \r\n");
+    printf("                 Welcome to  ARMCS-OS  Kernel                \r\n");
+    printf("=============================================================\r\n\r\n");
 }
-
 // =========================
 //  Example application tasks
 // =========================
@@ -63,6 +64,14 @@ void system_monitor_task(void *arg)
     }
 }
 
+void oled_display_task(void *arg)
+{
+    i2c_init();
+    oled_init();
+    oled_clear();
+    oled_write_string("Welcome to ARMC4-OS");
+    while (1) task_sleep(10000);
+}
 // =========================
 //  app_main()
 // =========================
@@ -82,6 +91,7 @@ int app_main(void)
     // Buat application tasks
     task_create(app_task1, NULL, 2);
     task_create(app_task2, NULL, 3);
+    task_create(oled_display_task, NULL, 4);
 
     return 0;
 }
