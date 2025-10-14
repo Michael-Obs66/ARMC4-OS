@@ -40,19 +40,17 @@ SRCS = \
     drivers/gpio.c \
     drivers/timer.c \
     drivers/spi.c \
+    drivers/oled.c \
     lib/string.c \
     lib/printf.c \
     lib/assert.c \
-    test/test_kernel.c \
-    test/test_memory.c \
-    test/test_stress.c \
     apps/main.c
 
 # otomatis ganti ekstensi
 OBJS = $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
 
-TARGET = ukernelos
+TARGET = ARMC4-OS
 
 # --------------------------------------------------
 #  Rules
@@ -78,3 +76,4 @@ clean:
 	rm -f $(OBJS) $(TARGET).elf $(TARGET).bin $(TARGET).elf.disasm
 
 .PHONY: all clean
+
