@@ -1,55 +1,33 @@
-using sysbus
-
-# ==========================================
-# CPU
-# ==========================================
-cpu: CPU.CortexM @ sysbus
+peripherals:
+  cpu: CPU.CortexM @ sysbus
     cpuType: "cortex-m4"
     PerformanceInMips: 100
 
-# ==========================================
-# Memory Map
-# ==========================================
-ram: Memory.MappedMemory @ sysbus 0x20000000
-    size: 0x00030000   # 192 KB SRAM
+  ram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x00030000
 
-flash: Memory.MappedMemory @ sysbus 0x08000000
-    size: 0x00100000   # 1 MB Flash
+  flash: Memory.MappedMemory @ sysbus 0x08000000
+    size: 0x00100000
 
-# ==========================================
-# UART1 - used by printf()
-# ==========================================
-uart1: UART.PL011 @ sysbus 0x40013800
+  uart1: UART.PL011 @ sysbus 0x40013800
     -> cpu@37
     frequency: 72000000
-connector Connect uart1 -> sysbus LogConsole
+  connector Connect uart1 -> sysbus LogConsole
 
-# ==========================================
-# I2C1 - OLED interface
-# ==========================================
-i2c1: I2C.GenericI2C @ sysbus 0x40005400
+  i2c1: I2C.GenericI2C @ sysbus 0x40005400
     -> cpu@31
-connector Connect i2c1 -> sysbus LogConsole
+  connector Connect i2c1 -> sysbus LogConsole
 
-# ==========================================
-# GPIOA
-# ==========================================
-gpioa: Miscellaneous.GPIOModule @ sysbus 0x40020000
+  gpioa: Miscellaneous.GPIOModule @ sysbus 0x40020000
     size: 0x400
 
-# ==========================================
-# GPIOC (LED on PC13)
-# ==========================================
-gpioc: Miscellaneous.GPIOModule @ sysbus 0x40020800
+  gpioc: Miscellaneous.GPIOModule @ sysbus 0x40020800
     size: 0x400
 
-led_green: Miscellaneous.LED @ gpioc 13
-connector Connect led_green -> sysbus LogConsole
+  led_green: Miscellaneous.LED @ gpioc 13
+  connector Connect led_green -> sysbus LogConsole
 
-# ==========================================
-# NVIC
-# ==========================================
-nvic: IRQControllers.NVIC @ sysbus 0xE000E100
+  nvic: IRQControllers.NVIC @ sysbus 0xE000E100
     priorities: 240
     numberOfIRQs: 240
     cpu: cpu
