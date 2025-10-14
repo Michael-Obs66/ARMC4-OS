@@ -10,17 +10,15 @@ A lightweight **microkernel-based operating system** designed for ARM Cortex-M4 
 This project is built from scratch using **C** and **ARM Assembly**, with a focus on **simplicity, modularity, and extensibility** for IoT and embedded systems.
 
 ---
-## 🚀 Why This Microkernel OS?
+## 🚀 Why ARMC4-OS?
 
-Unlike existing RTOS solutions, this project aims to combine **lightweight performance** with **modular security**.  
+This project aims to combine **lightweight performance** with **modular security**.  
 
 ---
 ### ✨ Key Advantages of MicrokernelOS
 - 🔒 **Secure by design**: Drivers and services run in isolated spaces.  
 - ⚡ **Lightweight**: Minimal overhead, suitable for ARM Cortex-M4.  
 - 🔧 **Modular**: Easy to extend with new drivers without touching the kernel.  
-- 🛡️ **Reliable**: A faulty driver won’t crash the whole system.  
-- 📡 **IoT-ready**: Designed with mission-critical IoT use cases in mind (e.g., gas monitoring, safety systems).  
 
 ## ✨ Features
 
@@ -37,14 +35,14 @@ Unlike existing RTOS solutions, this project aims to combine **lightweight perfo
 ## 📂 Project Structure
 
 ```
-μKernelOS/
-├── boot/ # startup.s, linker.ld, boot.c
-├── kernel/ # kernel.c, scheduler.c, task.c, ipc.c
-├── arch/arm/ # cortex_m4.c, context_switch.s, interrupt.c
-├── mm/ # mm.c, heap.c, mpu.c
-├── drivers/ # uart.c, gpio.c, timer.c, oled.c
-├── apps/ # blinky.c, shell.c, game.c
-├── include/ # kernel.h, task.h, drivers.h
+ARMC4-OS/
+├── boot/ # startup.s, linker.ld, boot.c ..etc
+├── kernel/ # kernel.c, scheduler.c, task.c, ipc.c ..etc
+├── arch/arm/ # cortex_m4.c, context_switch.s, interrupt.c ..etc
+├── mm/ # mm.c, heap.c, mpu.c ..etc
+├── drivers/ # uart.c, gpio.c, timer.c, oled.c ..etc
+├── apps/ # blinky.c, shell.c, game.c ..etc
+├── include/ # kernel.h, task.h, drivers.h, oled.h ..etc
 └── Makefile
 ```
 
@@ -107,16 +105,6 @@ You can test **ARMC4-OS** on:
 Currently, documentation is minimal. More details on APIs, scheduler, IPC, and drivers will be added soon.  
 
 For now, browse the `kernel/` and `arch/arm/` source code for implementation details.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome!  
-- Fork this repository  
-- Create a feature branch (`git checkout -b feature/my-feature`)  
-- Commit changes and push  
-- Open a Pull Request  
 
 ---
 
