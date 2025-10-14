@@ -75,7 +75,7 @@ Or upload with your preferred flashing tool.
 
 ## 🚀 Running the OS
 
-You can test **μKernelOS** on:  
+You can test **ARMC4-OS** on:  
 - **Real hardware** – STM32F4 or similar Cortex-M4 boards.  
 - **Emulator** - run with RENODE:
   1. make run_kernel.resc file :
