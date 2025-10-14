@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/ARM-Cortex--M4-blue?style=for-the-badge&logo=arm" />
   <img src="https://img.shields.io/badge/Microkernel-OS-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Language-C%2FASM-orange?style=for-the-badge&logo=c" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-Apache 2.0-yellow?style=for-the-badge" />
 </p>
 
 A lightweight **microkernel-based operating system** designed for ARM Cortex-M4 microcontrollers.  
