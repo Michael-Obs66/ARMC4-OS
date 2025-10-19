@@ -110,16 +110,16 @@ int app_main(void)
 int main(void)
 {
     // Inisialisasi board dan peripheral (GPIO, UART, I2C, OLED, dsb)
-    board_Init();
+    Board_Init();
 
     // Inisialisasi kernel & subsistem
-    kernel_Init();
+    void kernel_Init(const char *message);
 
     // Jalankan aplikasi utama
     app_main();
 
     // Start scheduler multitasking
-    scheduler_Start();
+    scheduler_start();
 
     // Seharusnya tidak pernah kembali ke sini
     while (1);
