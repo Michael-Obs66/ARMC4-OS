@@ -45,7 +45,7 @@ LDFLAGS = -T boot/linker.ld \
 # --------------------------------------------------
 SRCS = \
     boot/boot.c \
-    boot/startup_stm32f446re.s \
+    boards/nucleo-f446re/startup_stm32f446re.s \
     kernel/kernel.c \
     kernel/scheduler.c \
     kernel/task.c \
@@ -131,3 +131,4 @@ clean:
 -include $(DEPS)
 
 .PHONY: all clean flash prepare
+
