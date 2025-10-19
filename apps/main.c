@@ -16,7 +16,6 @@
 extern void run_all_tests(void);
 extern void run_memory_tests(void);
 extern void run_stress_tests(void);
-extern void test_runner_task(void *arg);
 extern void Boot_Init(void);   // dari boot.c
 
 // =============================================
@@ -85,6 +84,18 @@ void oled_display_task(void *arg)
 }
 
 // =============================================
+//  Dummy Test Runner Task (sementara)
+// =============================================
+void test_runner_task(void *arg)
+{
+    (void)arg;
+    while (1) {
+        printf("[TEST] Running dummy test task...\r\n");
+        task_sleep(5000);
+    }
+}
+
+// =============================================
 //  LED Blink Task (PA5 onboard LED)
 // =============================================
 void led_blink_task(void *arg)
@@ -108,7 +119,7 @@ int app_main(void)
     task_create(app_task1, NULL, 2);
     task_create(app_task2, NULL, 3);
     task_create(oled_display_task, NULL, 4);
-    task_create(led_blink_task, NULL, 6);   // <== LED BLINK TASK
+    task_create(led_blink_task, NULL, 6);
 
     return 0;
 }
