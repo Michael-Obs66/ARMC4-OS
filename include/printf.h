@@ -2,7 +2,8 @@
 #define PRINTF_H
 
 #include <stdarg.h>
+#include "uart.h"
 
-void printf(const char *fmt, ...);
+int printf(const char *fmt, ...);
 
 #endif
