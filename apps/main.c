@@ -1,6 +1,7 @@
 #include <stddef.h>           // untuk NULL
 #include "../include/printf.h"
 #include "../include/task.h"
+#include "../include/kernel.h"
 #include "../include/mm.h"
 #include "../include/scheduler.h"
 #include "../include/uart.h"
