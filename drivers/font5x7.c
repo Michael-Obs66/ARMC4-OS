@@ -1,0 +1,17 @@
+#include <stdint.h>
+
+/*
+ * Dummy font data untuk OLED (5x7 font)
+ * Bisa diganti dengan font asli nanti.
+ * Format umum: font5x7[karakter ASCII - 32][5 kolom bitmap]
+ */
+
+const uint8_t font5x7[96][5] = {
+    {0x00, 0x00, 0x00, 0x00, 0x00}, // spasi
+    {0x00, 0x00, 0x5F, 0x00, 0x00}, // !
+    {0x00, 0x07, 0x00, 0x07, 0x00}, // "
+    {0x14, 0x7F, 0x14, 0x7F, 0x14}, // #
+    {0x24, 0x2A, 0x7F, 0x2A, 0x12}, // $
+    // ...
+    // (bisa dilengkapi nanti kalau kamu mau font lengkap)
+};
