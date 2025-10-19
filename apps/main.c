@@ -1,4 +1,4 @@
-#include <stddef.h>           // untuk NULL
+#include <stddef.h>           
 #include "../include/printf.h"
 #include "../include/task.h"
 #include "../include/kernel.h"
@@ -9,17 +9,18 @@
 #include "../include/i2c.h"
 #include "../boards/nucleo-f446re/board_config.h"
 
-// =============================================
-//  External test functions (optional modules)
-// =============================================
+/* =========================================================
+ *  External test functions (optional)
+ * ========================================================= */
 extern void run_all_tests(void);
 extern void run_memory_tests(void);
 extern void run_stress_tests(void);
 extern void test_runner_task(void *arg);
+extern void Boot_Init(void);   // deklarasi Boot_Init dari boot.c
 
-// =============================================
-//  Boot Banner
-// =============================================
+/* =========================================================
+ *  Boot Banner
+ * ========================================================= */
 static void print_boot_banner(void)
 {
     printf("\r\n");
@@ -34,9 +35,9 @@ static void print_boot_banner(void)
     printf("=============================================================\r\n\r\n");
 }
 
-// =============================================
-//  Application Tasks
-// =============================================
+/* =========================================================
+ *  Application Tasks
+ * ========================================================= */
 void app_task1(void *arg)
 {
     int counter = 0;
@@ -64,7 +65,7 @@ void system_monitor_task(void *arg)
         printf("Memory free  : %lu bytes\r\n", mm_get_free());
         printf("Active tasks : %d\r\n", scheduler_get_task_count());
         printf("=======================\r\n");
-        task_sleep(10000); // tiap 10 detik
+        task_sleep(10000);
     }
 }
 
@@ -82,21 +83,15 @@ void oled_display_task(void *arg)
     }
 }
 
-// =============================================
-//  app_main() - create tasks
-// =============================================
+/* =========================================================
+ *  app_main() - create tasks
+ * ========================================================= */
 int app_main(void)
 {
-    // Tampilkan banner boot di UART
     print_boot_banner();
 
-    // Buat test runner task (opsional)
     task_create(test_runner_task, NULL, 5);
-
-    // Buat system monitor task
     task_create(system_monitor_task, NULL, 1);
-
-    // Buat application tasks
     task_create(app_task1, NULL, 2);
     task_create(app_task2, NULL, 3);
     task_create(oled_display_task, NULL, 4);
@@ -104,23 +99,23 @@ int app_main(void)
     return 0;
 }
 
-// =============================================
-//  main() - entry point
-// =============================================
+/* =========================================================
+ *  main() - Entry Point
+ * ========================================================= */
 int main(void)
 {
-    // Inisialisasi board dan peripheral (GPIO, UART, I2C, OLED, dsb)
+    // 1. Init hardware dasar
     Board_Init();
 
-    // Inisialisasi kernel & subsistem
-    void kernel_Init(const char *message);
+    // 2. Init sistem & kernel
+    Boot_Init();
 
-    // Jalankan aplikasi utama
+    // 3. Buat task aplikasi
     app_main();
 
-    // Start scheduler multitasking
+    // 4. Jalankan scheduler multitasking
     scheduler_start();
 
-    // Seharusnya tidak pernah kembali ke sini
+    // Tidak pernah kembali ke sini
     while (1);
 }
