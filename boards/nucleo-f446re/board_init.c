@@ -1,4 +1,5 @@
 #include "board_config.h"
+#include "../include/stm32f4xx_hal_gpio.h"
 
 void Board_Init(void) {
     /* Enable GPIOA clock */
