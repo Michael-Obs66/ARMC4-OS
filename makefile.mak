@@ -1,30 +1,49 @@
+# ==============================================================
+#   ARMC4-OS Build System for STM32 NUCLEO-F446RE
+#   Updated: 2025-10-19
+# ==============================================================
+
 # --------------------------------------------------
 #  Toolchain
 # --------------------------------------------------
-CC      = arm-none-eabi-gcc
-AS      = arm-none-eabi-as
-OBJCOPY = arm-none-eabi-objcopy
-OBJDUMP = arm-none-eabi-objdump
+CC       = arm-none-eabi-gcc
+AS       = arm-none-eabi-as
+OBJCOPY  = arm-none-eabi-objcopy
+OBJDUMP  = arm-none-eabi-objdump
+SIZE     = arm-none-eabi-size
 
-CPU     = cortex-m4
+# --------------------------------------------------
+#  Target Board
+# --------------------------------------------------
+BOARD    ?= nucleo-f446re
+BOARD_DIR = boards/$(BOARD)
+
+CPU      = cortex-m4
+TARGET   = ARMC4-OS
+
+# --------------------------------------------------
+#  Directories
+# --------------------------------------------------
+SRC_DIRS = boot kernel arch/arm mm drivers lib apps $(BOARD_DIR)
+BUILD_DIR = build
 
 # --------------------------------------------------
 #  Flags
 # --------------------------------------------------
-CFLAGS  = -mcpu=$(CPU) -mthumb -Wall -O2 -nostdlib -ffreestanding \
-          -fno-common -ffunction-sections -fdata-sections \
-          -Iinclude -I. -Ikernel -Iarch/arm -Imm -Idrivers -Ilib
+CFLAGS  = -mcpu=$(CPU) -mthumb -Wall -O2 -ffreestanding -fno-common \
+          -ffunction-sections -fdata-sections -MMD -MP \
+          -Iinclude -I. -Ikernel -Iarch/arm -Imm -Idrivers -Ilib -I$(BOARD_DIR)
 
 ASFLAGS = -mcpu=$(CPU) -mthumb
 
-LDFLAGS = -T boot/linker.ld -nostartfiles -nostdlib \
-          --specs=nosys.specs -Wl,--gc-sections
+LDFLAGS = -T $(BOARD_DIR)/linker_stm32f446re.ld \
+          -nostartfiles -nostdlib --specs=nosys.specs \
+          -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
 
 # --------------------------------------------------
 #  Source files
 # --------------------------------------------------
 SRCS = \
-    boot/startup.s \
     boot/boot.c \
     kernel/kernel.c \
     kernel/scheduler.c \
@@ -40,40 +59,74 @@ SRCS = \
     drivers/gpio.c \
     drivers/timer.c \
     drivers/spi.c \
+    drivers/i2c.c \
     drivers/oled.c \
     lib/string.c \
     lib/printf.c \
     lib/assert.c \
-    apps/main.c
-
-# otomatis ganti ekstensi
-OBJS = $(SRCS:.c=.o)
-OBJS := $(OBJS:.s=.o)
-
-TARGET = ARMC4-OS
+    apps/main.c \
+    $(BOARD_DIR)/board_init.c \
+    $(BOARD_DIR)/startup_stm32f446re.s
 
 # --------------------------------------------------
-#  Rules
+#  Build object list
 # --------------------------------------------------
-all: $(TARGET).elf $(TARGET).bin
+OBJS = $(SRCS:%=$(BUILD_DIR)/%.o)
+DEPS = $(OBJS:.o=.d)
 
-$(TARGET).elf: $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
-	$(OBJDUMP) -S $@ > $@.disasm
+# --------------------------------------------------
+#  Default rule
+# --------------------------------------------------
+all: prepare $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin
+	@echo "------------------------------------------------------"
+	@$(SIZE) $(BUILD_DIR)/$(TARGET).elf
+	@echo "Build complete for $(BOARD)!"
 
-$(TARGET).bin: $(TARGET).elf
-	$(OBJCOPY) -O binary $< $@
+# --------------------------------------------------
+#  Build rules
+# --------------------------------------------------
+prepare:
+	@mkdir -p $(dir $(OBJS))
+	@mkdir -p $(BUILD_DIR)
 
-# compile .c → .o
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+# Compile C sources
+$(BUILD_DIR)/%.c.o: %.c
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
 
-# assemble .s → .o
-%.o: %.s
-	$(AS) $(ASFLAGS) -o $@ $<
+# Assemble ASM sources
+$(BUILD_DIR)/%.s.o: %.s
+	@echo "AS $<"
+	@$(AS) $(ASFLAGS) -o $@ $<
 
+# Link final ELF
+$(BUILD_DIR)/$(TARGET).elf: $(OBJS)
+	@echo "LD $@"
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	@$(OBJDUMP) -S $@ > $(BUILD_DIR)/$(TARGET).disasm
+
+# Convert ELF → BIN
+$(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
+	@echo "OBJCOPY $@"
+	@$(OBJCOPY) -O binary $< $@
+
+# --------------------------------------------------
+#  Flash to STM32 (via ST-Link)
+# --------------------------------------------------
+flash: all
+	@echo "Flashing $(TARGET).bin to board..."
+	st-flash write $(BUILD_DIR)/$(TARGET).bin 0x08000000
+
+# --------------------------------------------------
+#  Clean
+# --------------------------------------------------
 clean:
-	rm -f $(OBJS) $(TARGET).elf $(TARGET).bin $(TARGET).elf.disasm
+	@echo "Cleaning build directory..."
+	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean
+# --------------------------------------------------
+#  Include dependencies
+# --------------------------------------------------
+-include $(DEPS)
 
+.PHONY: all clean flash prepare
