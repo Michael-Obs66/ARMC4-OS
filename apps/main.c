@@ -1,4 +1,4 @@
-#include <stddef.h>           
+#include <stddef.h>           // untuk NULL
 #include "../include/printf.h"
 #include "../include/task.h"
 #include "../include/kernel.h"
@@ -9,18 +9,18 @@
 #include "../include/i2c.h"
 #include "../boards/nucleo-f446re/board_config.h"
 
-/* =========================================================
- *  External test functions (optional)
- * ========================================================= */
+// =============================================
+//  External test functions (optional modules)
+// =============================================
 extern void run_all_tests(void);
 extern void run_memory_tests(void);
 extern void run_stress_tests(void);
 extern void test_runner_task(void *arg);
-extern void Boot_Init(void);   // deklarasi Boot_Init dari boot.c
+extern void Boot_Init(void);   // dari boot.c
 
-/* =========================================================
- *  Boot Banner
- * ========================================================= */
+// =============================================
+//  Boot Banner
+// =============================================
 static void print_boot_banner(void)
 {
     printf("\r\n");
@@ -35,9 +35,9 @@ static void print_boot_banner(void)
     printf("=============================================================\r\n\r\n");
 }
 
-/* =========================================================
- *  Application Tasks
- * ========================================================= */
+// =============================================
+//  Application Tasks
+// =============================================
 void app_task1(void *arg)
 {
     int counter = 0;
@@ -83,9 +83,21 @@ void oled_display_task(void *arg)
     }
 }
 
-/* =========================================================
- *  app_main() - create tasks
- * ========================================================= */
+// =============================================
+//  LED Blink Task (PA5 onboard LED)
+// =============================================
+void led_blink_task(void *arg)
+{
+    (void)arg;
+    while (1) {
+        HAL_GPIO_TogglePin(GPIOA, 5); // toggle LED PA5
+        task_sleep(500);              // delay 500 ms
+    }
+}
+
+// =============================================
+//  app_main() - create tasks
+// =============================================
 int app_main(void)
 {
     print_boot_banner();
@@ -95,27 +107,27 @@ int app_main(void)
     task_create(app_task1, NULL, 2);
     task_create(app_task2, NULL, 3);
     task_create(oled_display_task, NULL, 4);
+    task_create(led_blink_task, NULL, 6);   // <== LED BLINK TASK
 
     return 0;
 }
 
-/* =========================================================
- *  main() - Entry Point
- * ========================================================= */
+// =============================================
+//  main() - entry point
+// =============================================
 int main(void)
 {
-    // 1. Init hardware dasar
+    // 1. Inisialisasi board & peripheral dasar
     Board_Init();
 
-    // 2. Init sistem & kernel
+    // 2. Inisialisasi sistem & kernel
     Boot_Init();
 
-    // 3. Buat task aplikasi
+    // 3. Buat semua task aplikasi
     app_main();
 
     // 4. Jalankan scheduler multitasking
     scheduler_start();
 
-    // Tidak pernah kembali ke sini
     while (1);
 }
