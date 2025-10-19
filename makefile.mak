@@ -32,7 +32,7 @@ BUILD_DIR = build
 # --------------------------------------------------
 CFLAGS  = -mcpu=$(CPU) -mthumb -Wall -O2 -ffreestanding -fno-common \
           -ffunction-sections -fdata-sections -MMD -MP \
-          -Iinclude -I. -Ikernel -Iarch/arm -Imm -Idrivers -Ilib -I$(BOARD_DIR)
+          -Iinclude -I. -Ikernel -Iarch/arm -Imm -Idrivers -Ilib -Iboards/$(BOARD)
 
 ASFLAGS = -mcpu=$(CPU) -mthumb
 
@@ -130,3 +130,4 @@ clean:
 -include $(DEPS)
 
 .PHONY: all clean flash prepare
+
