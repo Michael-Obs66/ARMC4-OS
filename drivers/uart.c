@@ -1,42 +1,30 @@
-#include "../include/drivers.h"
+#include "stm32f4xx.h"
+#include "../include/uart.h"
 
-#define USART1_BASE 0x40013800
-#define USART1_SR   (*((volatile uint32_t *)(USART1_BASE + 0x00)))
-#define USART1_DR   (*((volatile uint32_t *)(USART1_BASE + 0x04)))
-#define USART1_BRR  (*((volatile uint32_t *)(USART1_BASE + 0x08)))
-#define USART1_CR1  (*((volatile uint32_t *)(USART1_BASE + 0x0C)))
+#define USART2_BASE 0x40004400UL
+#define RCC_BASE    0x40023800UL
 
-#define GPIOA_BASE 0x48000000
-#define GPIOA_AFRH (*((volatile uint32_t *)(GPIOA_BASE + 0x24)))
+#define RCC_APB1ENR (*(volatile uint32_t *)(RCC_BASE + 0x40))
+#define USART2_SR   (*(volatile uint32_t *)(USART2_BASE + 0x00))
+#define USART2_DR   (*(volatile uint32_t *)(USART2_BASE + 0x04))
+#define USART2_BRR  (*(volatile uint32_t *)(USART2_BASE + 0x08))
+#define USART2_CR1  (*(volatile uint32_t *)(USART2_BASE + 0x0C))
 
 void uart_init(void)
 {
-    // Configure PA9 as TX, PA10 as RX
-    // Enable AF mode (AF7 for USART1)
-    GPIOA_AFRH |= (7 << 4) | (7 << 8);
-    
-    // Configure USART1
-    USART1_BRR = 833; // 72MHz / 115200 = 625
-    USART1_CR1 = (1 << 13) | (1 << 3) | (1 << 2); // UE, TE, RE
+    RCC_APB1ENR |= (1 << 17);        // Enable USART2 clock
+    USART2_BRR = 0x0683;             // 9600 baud @16MHz
+    USART2_CR1 = (1 << 13) | (1 << 3) | (1 << 2); // UE, TE, RE enable
 }
 
-void uart_putc(char c)
+void uart_send_char(char c)
 {
-    while (!(USART1_SR & (1 << 7))); // Wait for TXE
-    USART1_DR = c;
+    while (!(USART2_SR & (1 << 7))); // TXE wait
+    USART2_DR = c;
 }
 
-char uart_getc(void)
+void uart_send_string(const char *str)
 {
-    while (!(USART1_SR & (1 << 5))); // Wait for RXNE
-    return USART1_DR & 0xFF;
+    while (*str)
+        uart_send_char(*str++);
 }
-
-void uart_puts(const char *str)
-{
-    while (*str) {
-        uart_putc(*str++);
-    }
-}
-
-
