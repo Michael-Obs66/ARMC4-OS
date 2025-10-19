@@ -1,39 +1,30 @@
 #include <stdint.h>
+#include "../include/kernel.h"
 
-#define RCC_BASE        0x40021000
-#define RCC_AHBENR      (*((volatile uint32_t *)(RCC_BASE + 0x14)))
-#define RCC_APB2ENR     (*((volatile uint32_t *)(RCC_BASE + 0x18)))
+/* STM32F4 Peripheral Base */
+#define RCC_BASE        0x40023800UL
+#define FLASH_BASE      0x40023C00UL
+#define SCB_BASE        0xE000ED00UL
 
-#define FLASH_BASE      0x40022000
-#define FLASH_ACR       (*((volatile uint32_t *)(FLASH_BASE + 0x00)))
-
-#define SCB_BASE        0xE000ED00
-#define SCB_VTOR        (*((volatile uint32_t *)(SCB_BASE + 0x08)))
-#define SCB_CCR         (*((volatile uint32_t *)(SCB_BASE + 0x14)))
+#define RCC_AHB1ENR     (*(volatile uint32_t *)(RCC_BASE + 0x30))
+#define RCC_APB1ENR     (*(volatile uint32_t *)(RCC_BASE + 0x40))
+#define RCC_APB2ENR     (*(volatile uint32_t *)(RCC_BASE + 0x44))
+#define FLASH_ACR       (*(volatile uint32_t *)(FLASH_BASE + 0x00))
+#define SCB_VTOR        (*(volatile uint32_t *)(SCB_BASE + 0x08))
+#define SCB_CCR         (*(volatile uint32_t *)(SCB_BASE + 0x14))
 
 void SystemInit(void)
 {
-    // Set vector table offset
-    SCB_VTOR = 0x08000000;
-    
-    // Enable prefetch buffer and set flash latency
-    FLASH_ACR = (1 << 4) | (1 << 3) | (2 << 0);
-    
-    // Enable clock for GPIOA, GPIOB, GPIOC
-    RCC_AHBENR |= (1 << 17) | (1 << 18) | (1 << 19);
-    
-    // Enable clock for USART1, SPI1, TIM1
-    RCC_APB2ENR |= (1 << 12) | (1 << 14) | (1 << 11);
-    
-    // Enable divide by 8 for sleep mode
-    SCB_CCR |= (1 << 4);
+    SCB_VTOR = 0x08000000U;                     // Vector table base
+    FLASH_ACR = (1 << 8) | (1 << 9) | (2 << 0); // Prefetch & 2 WS latency
+    RCC_AHB1ENR |= (1 << 0) | (1 << 1) | (1 << 2); // GPIOA,B,C
+    RCC_APB1ENR |= (1 << 17);                   // USART2
+    RCC_APB2ENR |= (1 << 12);                   // SPI1
+    SCB_CCR |= (1 << 4);                        // Sleep divide enable
 }
 
-void __attribute__((naked)) main(void)
+void Boot_Init(void)
 {
-    // Initialize kernel
-    extern void kernel_main(void);
+    SystemInit();
     kernel_main();
-    
-    while(1);
 }
