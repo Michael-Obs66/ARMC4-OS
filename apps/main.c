@@ -6,16 +6,19 @@
 #include "../include/uart.h"
 #include "../include/oled.h"
 #include "../include/i2c.h"
+#include "../boards/nucleo-f446re/board_config.h"
 
-// Test functions
+// =============================================
+//  External test functions (optional modules)
+// =============================================
 extern void run_all_tests(void);
 extern void run_memory_tests(void);
 extern void run_stress_tests(void);
 extern void test_runner_task(void *arg);
 
-// =========================
-//  Banner Boot Success
-// =========================
+// =============================================
+//  Boot Banner
+// =============================================
 static void print_boot_banner(void)
 {
     printf("\r\n");
@@ -26,12 +29,13 @@ static void print_boot_banner(void)
     printf("    /_/ |_| \\____/_/  /_/   \\__,_/   \\___/ /____/ /____/     \r\n");
     printf("                                                             \r\n");
     printf("                 Boot SUCCESSFULLY INITIALIZED               \r\n");
-    printf("                 Welcome to  ARMCS-OS  Kernel                \r\n");
+    printf("                 Welcome to  ARMC4-OS  Kernel                \r\n");
     printf("=============================================================\r\n\r\n");
 }
-// =========================
-//  Example application tasks
-// =========================
+
+// =============================================
+//  Application Tasks
+// =============================================
 void app_task1(void *arg)
 {
     int counter = 0;
@@ -54,13 +58,12 @@ void system_monitor_task(void *arg)
 {
     while (1) {
         printf("\n=== System Monitor ===\r\n");
-        printf("System ticks: %lu\r\n", kernel_get_ticks());
-        printf("Memory used: %lu bytes\r\n", mm_get_used());
-        printf("Memory free: %lu bytes\r\n", mm_get_free());
-        printf("Active tasks: %d\r\n", scheduler_get_task_count());
-        printf("=====================\r\n");
-        
-        task_sleep(10000); // Report every 10 detik
+        printf("System ticks : %lu\r\n", kernel_get_ticks());
+        printf("Memory used  : %lu bytes\r\n", mm_get_used());
+        printf("Memory free  : %lu bytes\r\n", mm_get_free());
+        printf("Active tasks : %d\r\n", scheduler_get_task_count());
+        printf("=======================\r\n");
+        task_sleep(10000); // tiap 10 detik
     }
 }
 
@@ -70,19 +73,23 @@ void oled_display_task(void *arg)
     oled_init();
     oled_clear();
     oled_write_string("Welcome to ARMC4-OS");
-    while (1) task_sleep(10000);
+
+    while (1) {
+        oled_clear();
+        oled_write_string("NUCLEO-F446RE OK");
+        task_sleep(8000);
+    }
 }
-// =========================
-//  app_main()
-// =========================
+
+// =============================================
+//  app_main() - create tasks
+// =============================================
 int app_main(void)
 {
     // Tampilkan banner boot di UART
     print_boot_banner();
 
-    // Kernel akan mulai otomatis
-
-    // Buat test runner task
+    // Buat test runner task (opsional)
     task_create(test_runner_task, NULL, 5);
 
     // Buat system monitor task
@@ -94,4 +101,25 @@ int app_main(void)
     task_create(oled_display_task, NULL, 4);
 
     return 0;
+}
+
+// =============================================
+//  main() - entry point
+// =============================================
+int main(void)
+{
+    // Inisialisasi board dan peripheral (GPIO, UART, I2C, OLED, dsb)
+    Board_Init();
+
+    // Inisialisasi kernel & subsistem
+    Kernel_Init();
+
+    // Jalankan aplikasi utama
+    app_main();
+
+    // Start scheduler multitasking
+    Scheduler_Start();
+
+    // Seharusnya tidak pernah kembali ke sini
+    while (1);
 }
