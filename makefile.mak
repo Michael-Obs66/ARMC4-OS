@@ -63,6 +63,7 @@ SRCS = \
     drivers/spi.c \
     drivers/i2c.c \
     drivers/oled.c \
+    drivers/font5x7.c \
     lib/string.c \
     lib/printf.c \
     lib/assert.c \
@@ -131,4 +132,5 @@ clean:
 -include $(DEPS)
 
 .PHONY: all clean flash prepare
+
 
