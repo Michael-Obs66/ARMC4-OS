@@ -8,7 +8,7 @@
 #include "../include/oled.h"
 #include "../include/i2c.h"
 #include "../boards/nucleo-f446re/board_config.h"
-#include "../include/stm32f4xx_hal_gpio.h"
+#include "stm32f4xx_hal_gpio.h"
 
 // =============================================
 //  External test functions (optional modules)
