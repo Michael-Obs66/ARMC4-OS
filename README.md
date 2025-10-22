@@ -9,6 +9,9 @@
 A lightweight **microkernel-based operating system** designed for ARM Cortex-M4 microcontrollers.  
 This project is built from scratch using **C** and **ARM Assembly**, with a focus on **simplicity, modularity, and extensibility** for IoT and embedded systems.
 
+Video : 
+https://youtube.com/shorts/I3MKKgjhtqE
+
 ---
 ## 🚀 Why ARMC4-OS?
 
